@@ -1,0 +1,10 @@
+body {
+  position: absolute; }
+
+.image-fight {
+  text-align: center;
+  position: relative;
+  top: 50%; }
+
+.message {
+  font-size: 18px; }
