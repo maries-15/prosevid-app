@@ -7,6 +7,7 @@ angular.module('starter', [
   'ionic',
   'firebase',
   'ngStorage',
+  'starter.controllers',
   'questions.controllers',
   'login.controller',
   'services.questions'
@@ -65,10 +66,7 @@ angular.module('starter', [
     $urlRouterProvider.otherwise('/login');
   }]);
 
-angular.module('questions.controllers', [])
-	.controller('questionsCtrl', ['$scope', function($scope) {
-		console.log('this');
-	}])
+angular.module('starter.controllers', [])
 	.controller('rankingCtrl', ['$scope', function($scope) {
 		$scope.usersRanking = [];
 		for (var i = 0; i < 8; i++) {
@@ -110,8 +108,32 @@ angular.module('login.controller', [])
 
 		$scope.registerUser = function() {
 			$ionicLoading.show({
-		    	template: 'Autenticando...'
-		    });
+				template: 'Autenticando...'
+			});
+
+			var ref = new Firebase(configApp.USERS);
+			ref.child('anma2510').once('value', function(snapshot) {
+				if (snapshot.exists()) {
+					user = snapshot.val();
+					sessionData.user = user;
+					$localStorage.user = user;
+
+					var questionsRef = new Firebase(configApp.QUESTIONS);
+					console.log(user.nivel);
+					questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {
+						if (snapshotQ.exists()) {
+							var questionsJson = snapshotQ.val();
+							$localStorage.Questions = Object.keys(questionsJson).map(
+								function(i) {
+									return questionsJson[i];
+								});
+							$ionicLoading.hide();
+							$state.go('menu');
+						}
+					});
+				}
+			});
+
 			var ref = new Firebase(configApp.USERS);
 			window.plugins.googleplus.login({
 					'offline': true,
@@ -136,7 +158,7 @@ angular.module('login.controller', [])
 							var questionsRef = new Firebase(configApp.QUESTIONS);
 							questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {
 								if (snapshotQ.exists()) {
-									questionsLevel = snapshotQ.val();
+									questionsLevel = UtilitiesService.transformJsonToArray(snapshotQ.val());
 									$localStorage.Questions = questionsLevel;
 									console.log($localStorage);
 									$ionicLoading.hide();
@@ -153,6 +175,38 @@ angular.module('login.controller', [])
 		};
 	}]);
 
+angular.module('questions.controllers', [])
+	.controller('questionsCtrl', ['$scope', '$localStorage', 'UtilitiesService', function($scope, $localStorage, UtilitiesService) {
+
+
+		$scope.data = {};
+
+		var questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
+
+		var loadQuestion = function() {
+			var questionRandom = parseInt(Math.random() * questionsLevel.length);
+			$scope.data = questionsLevel[questionRandom];
+			console.log(questionsLevel);
+			questionsLevel.splice(questionRandom, 1);
+			console.log(questionsLevel);
+		};
+
+		$scope.$on('loadQuestion', function(event, response) {
+			loadQuestion();
+		});
+
+		$scope.validateAnswer = function(answer) {
+			if (answer === $scope.data.opcionCorrecta) {
+				alert("Muy Bien");
+			} else {
+				alert("Has fallado");
+			}
+			loadQuestion();
+		};
+
+		loadQuestion();
+	}]);
+
 var firebaseRef = 'https://prosevid-app.firebaseio.com/';
 var applicationConfig = {
 	REF: firebaseRef,
@@ -163,4 +217,16 @@ var applicationConfig = {
 angular.module('services.questions', [])
 	.constant('configApp', applicationConfig)
 	.value('sessionData', {})
-	.value('questionsLevel', {});
+	.service('UtilitiesService',['$rootScope', function($rootScope) {
+		var services = {};
+
+		services.createNewArray = function(array){
+			var newArray = [];
+			for(var i = 0; i < array.length; i++){
+				newArray.push(array[i]);
+			}
+			return newArray;
+		}
+
+		return services;
+	}]);

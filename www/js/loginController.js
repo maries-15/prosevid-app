@@ -5,8 +5,32 @@ angular.module('login.controller', [])
 
 		$scope.registerUser = function() {
 			$ionicLoading.show({
-		    	template: 'Autenticando...'
-		    });
+				template: 'Autenticando...'
+			});
+
+			var ref = new Firebase(configApp.USERS);
+			ref.child('anma2510').once('value', function(snapshot) {
+				if (snapshot.exists()) {
+					user = snapshot.val();
+					sessionData.user = user;
+					$localStorage.user = user;
+
+					var questionsRef = new Firebase(configApp.QUESTIONS);
+					console.log(user.nivel);
+					questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {
+						if (snapshotQ.exists()) {
+							var questionsJson = snapshotQ.val();
+							$localStorage.Questions = Object.keys(questionsJson).map(
+								function(i) {
+									return questionsJson[i];
+								});
+							$ionicLoading.hide();
+							$state.go('menu');
+						}
+					});
+				}
+			});
+
 			var ref = new Firebase(configApp.USERS);
 			window.plugins.googleplus.login({
 					'offline': true,
@@ -31,7 +55,7 @@ angular.module('login.controller', [])
 							var questionsRef = new Firebase(configApp.QUESTIONS);
 							questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {
 								if (snapshotQ.exists()) {
-									questionsLevel = snapshotQ.val();
+									questionsLevel = UtilitiesService.transformJsonToArray(snapshotQ.val());
 									$localStorage.Questions = questionsLevel;
 									console.log($localStorage);
 									$ionicLoading.hide();

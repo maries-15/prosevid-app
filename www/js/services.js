@@ -8,4 +8,16 @@ var applicationConfig = {
 angular.module('services.questions', [])
 	.constant('configApp', applicationConfig)
 	.value('sessionData', {})
-	.value('questionsLevel', {});
+	.service('UtilitiesService',['$rootScope', function($rootScope) {
+		var services = {};
+
+		services.createNewArray = function(array){
+			var newArray = [];
+			for(var i = 0; i < array.length; i++){
+				newArray.push(array[i]);
+			}
+			return newArray;
+		}
+
+		return services;
+	}]);

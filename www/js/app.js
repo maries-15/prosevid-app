@@ -7,6 +7,7 @@ angular.module('starter', [
   'ionic',
   'firebase',
   'ngStorage',
+  'starter.controllers',
   'questions.controllers',
   'login.controller',
   'services.questions'

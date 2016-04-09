@@ -1,7 +1,4 @@
-angular.module('questions.controllers', [])
-	.controller('questionsCtrl', ['$scope', function($scope) {
-		console.log('this');
-	}])
+angular.module('starter.controllers', [])
 	.controller('rankingCtrl', ['$scope', function($scope) {
 		$scope.usersRanking = [];
 		for (var i = 0; i < 8; i++) {

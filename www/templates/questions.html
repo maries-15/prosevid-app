@@ -2,18 +2,18 @@
 	<ion-content>
 		<div class="card">
 			<div class="item item-text-wrap">
-				Pregunta
+				{{data.pregunta}}
 			</div>
 		</div>
 		<div class="card">
-			<div class="item item-text-wrap">
-				Opcion 1
+			<div class="item item-text-wrap" data-ng-click = "validateAnswer(data.opciones.opcion1)">
+				{{data.opciones.opcion1}}
 			</div>
-			<div class="item item-text-wrap">
-				Opcion 2
+			<div class="item item-text-wrap" data-ng-click = "validateAnswer(data.opciones.opcion2)">
+				{{data.opciones.opcion2}}
 			</div>
-			<div class="item item-text-wrap">
-				Opcion 3
+			<div class="item item-text-wrap" data-ng-click = "validateAnswer(data.opciones.opcion3)">
+				{{data.opciones.opcion3}}
 			</div>
 		</div>
 	</ion-content>
