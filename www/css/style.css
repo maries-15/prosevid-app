@@ -8,3 +8,43 @@ body {
 
 .message {
   font-size: 18px; }
+
+.body {
+  background: #98CCDA;
+  background-image: url("../img/texture.png");
+  background-size: cover; }
+  .body .time {
+    height: 60px;
+    width: 60px;
+    margin: 10px;
+    background: #194077;
+    border-radius: 100px;
+    position: absolute; }
+    .body .time .time-in {
+      height: 50px;
+      width: 50px;
+      margin: 5px;
+      background: #FAFAFB;
+      border-radius: 100px;
+      position: absolute; }
+  .body .shield {
+    float: right;
+    margin: 2px 10px; }
+  .body .band {
+    background: #EDEEF0;
+    height: 25px; }
+  .body .card {
+    border-radius: 10px; }
+    .body .card.question {
+      -webkit-box-shadow: 0px 2px 0px 2px #96999D;
+      -moz-box-shadow: 0px 2px 0px 2px #96999D;
+      box-shadow: 0px 2px 0px 2px #96999D;
+      margin-top: 78px; }
+    .body .card.all-options {
+      -webkit-box-shadow: 0px 4px 0px 0px #96999D;
+      -moz-box-shadow: 0px 4px 0px 0px #96999D;
+      box-shadow: 0px 4px 0px 0px #96999D;
+      margin: 8px 13px; }
+      .body .card.all-options .answer {
+        background: #EDEEF0;
+        padding: 9px 16px; }

@@ -1,0 +1,54 @@
+@mixin box-shadow($info){
+	-webkit-box-shadow: $info;
+	-moz-box-shadow: $info;
+	box-shadow: $info;
+}
+
+@mixin circle($size, $margin, $background){
+	height: $size;
+	width: $size;
+	margin: $margin;
+	background: $background;
+	border-radius: 100px;
+	position: absolute;
+}
+
+
+.body{
+	background: $backgroung1;
+	background-image: url("../img/texture.png");
+	background-size: cover;
+	.time{
+		@include circle(60px, 10px, #194077);
+		.time-in{
+			@include circle(50px, 5px, #FAFAFB);
+		}
+	}
+	.shield{
+		float: right;
+		margin: 2px 10px;
+	}
+	.band{
+		background: $band;
+	    height: 25px;
+	}
+
+	.card{
+		border-radius:10px;
+		
+		&.question{
+			@include box-shadow(0px 2px 0px 2px #96999D);
+			margin-top: 78px;
+		}
+		&.all-options{
+			@include box-shadow(0px 4px 0px 0px #96999D);
+			margin: 8px 13px;
+			.answer{
+				background: $answers; 
+				padding: 9px 16px;
+			}
+		}
+	}
+	
+}
+

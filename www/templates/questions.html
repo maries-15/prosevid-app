@@ -1,18 +1,30 @@
 <ion-view>
-	<ion-content>
-		<div class="card">
-			<div class="item item-text-wrap">
+	<ion-content class="body">
+		<div class="time">
+			<div class="time-in"></div>
+		</div>
+		<div class="shield" >
+		<!-- Que la url de la imagen sea la que cambie y se maneje por js -->
+			<img src="img/logo.png" alt="">
+		</div>
+		<div class="band"></div>
+		<div class="card question">
+			<div class="item item-text-wrap ">
 				{{data.pregunta}}
 			</div>
 		</div>
-		<div class="card">
-			<div class="item item-text-wrap" data-ng-click = "validateAnswer(data.opciones.opcion1)">
+		<div class="card all-options">
+			<div class="item item-text-wrap answer" data-ng-click = "validateAnswer(data.opciones.opcion1)">
 				{{data.opciones.opcion1}}
 			</div>
-			<div class="item item-text-wrap" data-ng-click = "validateAnswer(data.opciones.opcion2)">
-				{{data.opciones.opcion2}}
+		</div>
+		<div class="card all-options">
+			<div class="item item-text-wrap answer" data-ng-click = "validateAnswer(data.opciones.opcion2)">
+			{{data.opciones.opcion2}}
 			</div>
-			<div class="item item-text-wrap" data-ng-click = "validateAnswer(data.opciones.opcion3)">
+		</div>
+		<div class="card all-options">
+			<div class="item item-text-wrap answer" data-ng-click = "validateAnswer(data.opciones.opcion3)">
 				{{data.opciones.opcion3}}
 			</div>
 		</div>
