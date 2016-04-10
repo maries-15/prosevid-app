@@ -21,7 +21,7 @@ angular.module('starter.controllers', [])
 
 		$scope.saveQuestion = function(){
 			var ref = new Firebase(configApp.QUESTIONS).child('nivel'+$scope.metadata.nivel);
-			$scope.data.tipo = 'evacuación';
+			$scope.data.tipo = 'incendios';
     		ref.push($scope.data);
     		$ionicLoading.show({
 		    	template: 'Se guardo exitosamente',
