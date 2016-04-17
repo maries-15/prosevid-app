@@ -24,6 +24,14 @@
 			@include circle(50px, 5px, #FAFAFB);
 		}
 	}
+	.container-image{
+		text-align: center;
+		.image{
+			width: 150px;
+			height: 150px;
+			display: inline-block;
+		}
+	}
 	.shield{
 		float: right;
 		margin: 2px 10px;

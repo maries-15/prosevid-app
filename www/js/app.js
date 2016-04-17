@@ -47,6 +47,14 @@ angular.module('starter', [
         templateUrl: "templates/questions.html",
         controller: 'questionsCtrl'
       })
+      .state('completeQuestion', {
+        url:'/completeQuestion',
+        templateUrl: "templates/completeQuestion.html"
+      })
+      .state('passLevel', {
+        url:'/passLevel',
+        templateUrl: "templates/passLevel.html"
+      })
       .state('menuMore', {
         url:'/menuMore',
         templateUrl: "templates/menuMore.html",

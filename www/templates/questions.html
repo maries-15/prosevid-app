@@ -13,9 +13,10 @@
 				{{data.pregunta}}
 			</div>
 		</div>
-		<div class="image" data-ng-if="data.image !== undefined" style="background-image: url('img/imagesQuestions/{{data.image}}.jpg');">
-			
+		<div class="container-image" data-ng-if="data.image !== undefined">
+			<div class="image" style="background-image: url('img/imagesQuestions/{{data.image}}.jpg');"></div>
 		</div>
+		
 		<div class="card all-options">
 			<div class="item item-text-wrap answer" data-ng-click = "validateAnswer(data.opciones.opcion1)">
 				{{data.opciones.opcion1}}
