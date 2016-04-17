@@ -8,7 +8,7 @@ angular.module('login.controller', [])
 				template: 'Autenticando...'
 			});
 
-			var ref = new Firebase(configApp.USERS);
+			/**var ref = new Firebase(configApp.USERS);
 			ref.child('anma2510').once('value', function(snapshot) {
 				if (snapshot.exists()) {
 					user = snapshot.val();
@@ -30,7 +30,7 @@ angular.module('login.controller', [])
 						}
 					});
 				}
-			});
+			});**/
 
 			var ref = new Firebase(configApp.USERS);
 			window.plugins.googleplus.login({

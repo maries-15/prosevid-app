@@ -8,7 +8,7 @@ var applicationConfig = {
 angular.module('services.questions', [])
 	.constant('configApp', applicationConfig)
 	.value('sessionData', {})
-	.service('UtilitiesService',['$rootScope', function($rootScope) {
+	.service('UtilitiesService',['$localStorage', '$rootScope', 'sessionData', function($localStorage, $rootScope, sessionData) {
 		var services = {};
 
 		services.createNewArray = function(array){
@@ -17,7 +17,13 @@ angular.module('services.questions', [])
 				newArray.push(array[i]);
 			}
 			return newArray;
-		}
+		};
+
+		services.loadUser = function(){
+			if($localStorage.user){
+				sessionData.user = $localStorage.user;
+			};
+		};
 
 		return services;
 	}]);
