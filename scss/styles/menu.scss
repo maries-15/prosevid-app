@@ -1,11 +1,20 @@
-body{
-  position: absolute;
-}
+.body{
+	position: absolute;
+	background-image: url( "../img/background/esteFondo.jpg");
+	background-size: cover;
 
-.image-fight{
-  text-align: center;
-  position: relative;
-  top: 50%;
+	.image-fight{
+	  text-align: center;
+	  position: relative;
+	  padding-top: 36%;
+	}
+	.button-royal{
+		margin: 18px 40px;
+		background-color: rgb(29, 99, 101);
+		-webkit-box-shadow: -3px 3px 5px 0px rgb(188, 253, 255);
+		-moz-box-shadow: -3px 3px 5px 0px rgb(188, 253, 255);
+		box-shadow: -3px 3px 5px 0px rgb(188, 253, 255);
+	}
 }
 
 .message{

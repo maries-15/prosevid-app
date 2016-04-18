@@ -1,11 +1,10 @@
 <ion-view>
-	<ion-content class="body">
+	<ion-content class="body {{typeQuestion}} scroll-content ionic-scroll">
 		<div class="time">
 			<div class="time-in"></div>
 		</div>
 		<div class="shield" >
-			<!-- Que la url de la imagen sea la que cambie y se maneje por js -->
-			<img src="img/logo.png" alt="">
+			<img ng-src='img/logos/logo {{data.tipo}}.png'>
 		</div>
 		<div class="band"></div>
 		<div class="card question">

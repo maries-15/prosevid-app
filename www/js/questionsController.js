@@ -4,6 +4,7 @@ angular.module('questions.controllers', [])
 
 
 		$scope.data = {};
+		$scope.typeQuestion = "incendios";
 		var acertadas = 0;
 		var fallidas = 0;
 
@@ -13,6 +14,15 @@ angular.module('questions.controllers', [])
 			var questionRandom = parseInt(Math.random() * questionsLevel.length);
 			$scope.data = questionsLevel[questionRandom];
 			questionsLevel.splice(questionRandom, 1);
+				
+			if($scope.data.tipo == "incendios"){
+				$scope.typeQuestion = "incendios";
+			} 
+			else if ($scope.data.tipo == "evacuación") {
+				$scope.typeQuestion = "evacuacion";
+			} else {
+				$scope.typeQuestion = "primerosAuxilios";
+			}
 		};
 
 		var loadNextLevel = function(){
