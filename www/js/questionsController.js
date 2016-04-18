@@ -1,6 +1,6 @@
 angular.module('questions.controllers', [])
-	.controller('questionsCtrl', ['$scope', '$localStorage', '$state', '$timeout', 'configApp', 'sessionData', 'UtilitiesService', 
-		function($scope, $localStorage, $state, $timeout, configApp, sessionData, UtilitiesService) {
+	.controller('questionsCtrl', ['$scope', '$localStorage', '$state', '$rootScope', '$timeout', 'configApp', 'sessionData', 'UtilitiesService', 
+		function($scope, $localStorage, $state, $rootScope, $timeout, configApp, sessionData, UtilitiesService) {
 
 
 		$scope.data = {};
@@ -23,6 +23,7 @@ angular.module('questions.controllers', [])
 			} else {
 				$scope.typeQuestion = "primerosAuxilios";
 			}
+			startTimer();
 		};
 
 		var loadNextLevel = function(){
@@ -51,6 +52,7 @@ angular.module('questions.controllers', [])
 		};
 
 		$scope.validateAnswer = function(answer) {
+			stopTimer();
 			if (answer === $scope.data.opcionCorrecta) {
 				acertadas++;
 				alert("Has acertado");
@@ -68,11 +70,14 @@ angular.module('questions.controllers', [])
 				}
 			}
 			$state.go('completeQuestion');
-			loadQuestion();
 		};
 
 		$scope.$on('loadQuestion', function(event, response) {
 			loadQuestion();
 		});
+
+		$rootScope.loadNextQuestion = function(){
+			loadQuestion();
+		};
 		loadQuestion();
 	}]);

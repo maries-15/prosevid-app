@@ -5,6 +5,9 @@
     "ionic": "driftyco/ionic-bower#1.2.4"
   },
   "dependencies": {
-    "ngstorage": "^0.3.10"
+    "ngstorage": "^0.3.10",
+    "jquery": "^2.2.3",
+    "firebase": "^2.4.2",
+    "angularfire": "^1.2.0"
   }
 }

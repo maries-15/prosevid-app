@@ -32,7 +32,8 @@
 	.time{
 		@include circle(60px, 10px, #194077);
 		.time-in{
-			@include circle(50px, 5px, #FAFAFB);
+			@include circle(30px, 14px, #FAFAFB);
+    		z-index: 5;
 		}
 	}
 	.container-image{
