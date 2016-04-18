@@ -1,9 +1,13 @@
+@mixin background($color, $url){
+	background: $color;
+	background-image: url($url);
+	background-size: cover;
+}
 @mixin box-shadow($info){
 	-webkit-box-shadow: $info;
 	-moz-box-shadow: $info;
 	box-shadow: $info;
 }
-
 @mixin circle($size, $margin, $background){
 	height: $size;
 	width: $size;
@@ -13,11 +17,18 @@
 	position: absolute;
 }
 
-
 .body{
-	background: $backgroung1;
-	background-image: url("../img/texture.png");
-	background-size: cover;
+
+	&.incendios{
+		@include background($backgroungIncendios, "../img/background/textureIncendios.png");
+	}
+	&.evacuacion{
+		@include background($backgroungEvacuacion, "../img/background/evacuacionMejor.png");
+	}
+	&.primerosAuxilios{
+		@include background($backgroungPrimerosAuxilios, "../img/background/texturePrimAuxilios.png");
+	}
+
 	.time{
 		@include circle(60px, 10px, #194077);
 		.time-in{
