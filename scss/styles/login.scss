@@ -1,7 +1,23 @@
 .body{
 	background-image: url( "../img/background/esteFondo.jpg");
 	background-size: cover;
-	/**.button.button-assertive{
-		   margin: 90% 40px;
-	}**/
+	.character{
+		width: 55%;
+		margin: 13% 25%;
+		img{
+			width: 100%;
+		}
+	}
+	.button-assertive{
+		margin: 18px 40px;
+		@extend .fontsButton;
+	}
+	.shields{
+		margin: 10px 20%;
+		width: 62%;
+		img{
+			width: 31%;
+		}
+	}
+	
 }

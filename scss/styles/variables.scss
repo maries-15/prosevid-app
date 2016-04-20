@@ -3,7 +3,6 @@
     font-family: "Roboto-Black"; 
     src: url(../fonts/Roboto-Black.ttf) format("truetype");
 }
-
 @font-face {
     font-family: "Roboto regular"; 
     src: url(../fonts/Roboto-Regular.ttf) format("truetype");
@@ -28,6 +27,13 @@
 	background: $background;
 	border-radius: 100px;
 	position: absolute;
+}
+
+// ----------CLASS GENERAL-------------
+.fontsButton{
+	font-family: "Roboto-Black";
+	font-size: 19px;
+	letter-spacing: 1.2px;
 }
 
 //-----------MENU------------
