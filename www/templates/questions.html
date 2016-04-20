@@ -1,4 +1,5 @@
 <ion-view>
+	<div id="blockScreen" class="blockScreen"></div>
 	<ion-content class="body {{typeQuestion}} scroll-content ionic-scroll">
 		<div class="time">
 			<div class="time-in"></div>
@@ -18,17 +19,17 @@
 		</div>
 		
 		<div class="card all-options">
-			<div class="item item-text-wrap answer" data-ng-click = "validateAnswer(data.opciones.opcion1)">
+			<div id="choice1" class="item item-text-wrap answer" data-ng-click = "validateAnswer(data.opciones.opcion1, 'choice1')">
 				{{data.opciones.opcion1}}
 			</div>
 		</div>
 		<div class="card all-options">
-			<div class="item item-text-wrap answer" data-ng-click = "validateAnswer(data.opciones.opcion2)">
+			<div id="choice2" class="item item-text-wrap answer" data-ng-click = "validateAnswer(data.opciones.opcion2 , 'choice2')">
 			{{data.opciones.opcion2}}
 			</div>
 		</div>
 		<div class="card all-options">
-			<div class="item item-text-wrap answer" data-ng-click = "validateAnswer(data.opciones.opcion3)">
+			<div id="choice3" class="item item-text-wrap answer" data-ng-click = "validateAnswer(data.opciones.opcion3, 'choice3')">
 				{{data.opciones.opcion3}}
 			</div>
 		</div>

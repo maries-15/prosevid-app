@@ -31,6 +31,8 @@ angular.module('starter', [
 		});
 
 		UtilitiesService.loadUser();
+		UtilitiesService.loadSuccessListener();
+
 	}])
 	.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
 		$stateProvider

@@ -7,6 +7,7 @@ angular.module('questions.controllers', [])
 		$scope.typeQuestion = "incendios";
 		var acertadas = 0;
 		var fallidas = 0;
+		var timerOut;
 
 		var questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
 
@@ -24,6 +25,7 @@ angular.module('questions.controllers', [])
 				$scope.typeQuestion = "primerosAuxilios";
 			}
 			startTimer();
+			startTimeOutCheck();
 		};
 
 		var loadNextLevel = function(){
@@ -43,41 +45,66 @@ angular.module('questions.controllers', [])
 							return questionsJson[i];
 						});
 					questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
-					console.log(questionsLevel.length);
 					acertadas = 0;
 					fallidas = 0;
-					$timeout(loadQuestion());
 				}
 			});
 		};
 
-		$scope.validateAnswer = function(answer) {
+		var startTimeOutCheck = function(){
+			timerOut = setTimeout(function() {
+				jQuery('#blockScreen').css('height',$rootScope.height);
+				console.log("Mostrar time out");
+				setTimeout(function() {
+					jQuery('#blockScreen').css('height', 0);
+					fallidas++;
+					if(fallidas === 3){
+						console.log("perdio impedido");
+					}
+					else{
+						$state.go('completeQuestion');
+					}
+				}, 1500);
+			}, 18000);
+		};
+
+		$scope.validateAnswer = function(answer, id) {
 			stopTimer();
+			clearTimeout(timerOut);
+			jQuery('#blockScreen').css('height',$rootScope.height);
 			if (answer === $scope.data.opcionCorrecta) {
 				acertadas++;
-				alert("Has acertado");
+				efectAnsweredQuestion(true, id);
 				if(acertadas === 2){
-					loadNextLevel();
-					$state.go('passLevel');
+					setTimeout(function() {
+						loadNextLevel();
+						$state.go('passLevel');
+					}, 3600);
 					return;
 				}
 			} else {
 				fallidas++;
-				alert("Has fallado");
+				efectAnsweredQuestion(false, id);
 				if(fallidas === 3){
-					//Reiniciar Nivel
-					alert("perdio impedido");
+					console.log("perdio impedido");
 				}
 			}
-			$state.go('completeQuestion');
+			setTimeout(function() {
+				$state.go('completeQuestion');
+			}, 3600);
 		};
 
 		$scope.$on('loadQuestion', function(event, response) {
 			loadQuestion();
 		});
 
+		$scope.$on('loadNextLevel', function(event, response){
+			loadNextLevel();
+		});
+
 		$rootScope.loadNextQuestion = function(){
 			loadQuestion();
 		};
+
 		loadQuestion();
 	}]);

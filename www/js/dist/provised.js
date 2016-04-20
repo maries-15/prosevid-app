@@ -31,6 +31,8 @@ angular.module('starter', [
 		});
 
 		UtilitiesService.loadUser();
+		UtilitiesService.loadSuccessListener();
+
 	}])
 	.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
 		$stateProvider
@@ -199,6 +201,7 @@ angular.module('questions.controllers', [])
 		$scope.typeQuestion = "incendios";
 		var acertadas = 0;
 		var fallidas = 0;
+		var timerOut;
 
 		var questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
 
@@ -216,6 +219,7 @@ angular.module('questions.controllers', [])
 				$scope.typeQuestion = "primerosAuxilios";
 			}
 			startTimer();
+			startTimeOutCheck();
 		};
 
 		var loadNextLevel = function(){
@@ -235,42 +239,67 @@ angular.module('questions.controllers', [])
 							return questionsJson[i];
 						});
 					questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
-					console.log(questionsLevel.length);
 					acertadas = 0;
 					fallidas = 0;
-					$timeout(loadQuestion());
 				}
 			});
 		};
 
-		$scope.validateAnswer = function(answer) {
+		var startTimeOutCheck = function(){
+			timerOut = setTimeout(function() {
+				jQuery('#blockScreen').css('height',$rootScope.height);
+				console.log("Mostrar time out");
+				setTimeout(function() {
+					jQuery('#blockScreen').css('height', 0);
+					fallidas++;
+					if(fallidas === 3){
+						console.log("perdio impedido");
+					}
+					else{
+						$state.go('completeQuestion');
+					}
+				}, 1500);
+			}, 18000);
+		};
+
+		$scope.validateAnswer = function(answer, id) {
 			stopTimer();
+			clearTimeout(timerOut);
+			jQuery('#blockScreen').css('height',$rootScope.height);
 			if (answer === $scope.data.opcionCorrecta) {
 				acertadas++;
-				alert("Has acertado");
+				efectAnsweredQuestion(true, id);
 				if(acertadas === 2){
-					loadNextLevel();
-					$state.go('passLevel');
+					setTimeout(function() {
+						loadNextLevel();
+						$state.go('passLevel');
+					}, 3600);
 					return;
 				}
 			} else {
 				fallidas++;
-				alert("Has fallado");
+				efectAnsweredQuestion(false, id);
 				if(fallidas === 3){
-					//Reiniciar Nivel
-					alert("perdio impedido");
+					console.log("perdio impedido");
 				}
 			}
-			$state.go('completeQuestion');
+			setTimeout(function() {
+				$state.go('completeQuestion');
+			}, 3600);
 		};
 
 		$scope.$on('loadQuestion', function(event, response) {
 			loadQuestion();
 		});
 
+		$scope.$on('loadNextLevel', function(event, response){
+			loadNextLevel();
+		});
+
 		$rootScope.loadNextQuestion = function(){
 			loadQuestion();
 		};
+
 		loadQuestion();
 	}]);
 
@@ -301,6 +330,14 @@ angular.module('services.questions', [])
 			};
 		};
 
+		services.loadSuccessListener = function(){
+			$rootScope.$on("$stateChangeSuccess", function(event, toState, toParams, fromState, fromParams)
+			{
+				if ($rootScope.height === undefined) {
+					$rootScope.height = jQuery('ion-nav-view').height();
+				}
+			});
+		}
 		return services;
 	}]);
 
@@ -334,7 +371,7 @@ function stopWatch(){
 
 function startTimer(){
 	timerCurrent = 0;
-	timerSeconds = 30;
+	timerSeconds = 18;
 	timerFinish = new Date().getTime()+(timerSeconds*1000);
 	drawTimer(100);
 	timer = setInterval('stopWatch()',50);
@@ -342,4 +379,28 @@ function startTimer(){
 
 function stopTimer(){
 	clearInterval(timer);
+}
+
+
+var colorsWrong = ['#FF9800','#FFF','#FF9800','#FFF','#FF0000'];
+var colorCorrect = ['#FF9800','#FFF','#FF9800','#FFF','#60FF00'];
+
+function efectAnsweredQuestion(correct, id){
+    var colors = colorCorrect;
+    if(correct === false){
+        colors = colorsWrong;
+    }
+    jQuery('#'+id).css('background',colors[0]);
+    var cont = 1;
+    var a = setInterval(function(){
+        jQuery('#'+id).css('background',colors[cont]);
+        cont++;
+        if(cont === 6){
+            clearInterval();
+            setTimeout(function() {
+                jQuery('#'+id).css('background','#EDEEF0');
+                jQuery('#blockScreen').css('height', 0);
+            }, 1500);
+        }
+    }, 500)
 }

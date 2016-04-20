@@ -25,5 +25,13 @@ angular.module('services.questions', [])
 			};
 		};
 
+		services.loadSuccessListener = function(){
+			$rootScope.$on("$stateChangeSuccess", function(event, toState, toParams, fromState, fromParams)
+			{
+				if ($rootScope.height === undefined) {
+					$rootScope.height = jQuery('ion-nav-view').height();
+				}
+			});
+		}
 		return services;
 	}]);
