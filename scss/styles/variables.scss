@@ -1,12 +1,51 @@
+//---------- FONTS-------------
+@font-face {
+    font-family: "Roboto-Black"; 
+    src: url(../fonts/Roboto-Black.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "Roboto regular"; 
+    src: url(../fonts/Roboto-Regular.ttf) format("truetype");
+}
+
+//----------- METHODS -----------------
+
+@mixin background($color){
+	background: $color;
+	background-image: url("../img/background/texture.png");
+	background-size: cover;
+}
+@mixin box-shadow($info){
+	-webkit-box-shadow: $info;
+	-moz-box-shadow: $info;
+	box-shadow: $info;
+}
+@mixin circle($size, $margin, $background){
+	height: $size;
+	width: $size;
+	margin: $margin;
+	background: $background;
+	border-radius: 100px;
+	position: absolute;
+}
+
+//-----------MENU------------
+
+$colorButtons: #194F50;
+
 // ---------QUESTIONS---------
 
 // Colors background 
 $backgroungPrimerosAuxilios : #98CCDA; 
-$backgroungIncendios: #DC7485;
-$backgroungEvacuacion: #E3AC8E;
+$backgroungIncendios: #F97575;
+$backgroungEvacuacion: #F9AF88;
+//F5BA9B evacuacion jaaa F9AF88
 
 // Top bar 
 $band: #EDEEF0;
 
 // Backgroung answers
 $answers: #EDEEF0;
+
+

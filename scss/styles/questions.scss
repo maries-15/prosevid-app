@@ -1,32 +1,14 @@
-@mixin background($color, $url){
-	background: $color;
-	background-image: url($url);
-	background-size: cover;
-}
-@mixin box-shadow($info){
-	-webkit-box-shadow: $info;
-	-moz-box-shadow: $info;
-	box-shadow: $info;
-}
-@mixin circle($size, $margin, $background){
-	height: $size;
-	width: $size;
-	margin: $margin;
-	background: $background;
-	border-radius: 100px;
-	position: absolute;
-}
-
 .body{
+	font-family: "Roboto regular";
 
 	&.incendios{
-		@include background($backgroungIncendios, "../img/background/textureIncendios.png");
+		@include background($backgroungIncendios);
 	}
 	&.evacuacion{
-		@include background($backgroungEvacuacion, "../img/background/evacuacionMejor.png");
+		@include background($backgroungEvacuacion);
 	}
 	&.primerosAuxilios{
-		@include background($backgroungPrimerosAuxilios, "../img/background/texturePrimAuxilios.png");
+		@include background($backgroungPrimerosAuxilios);
 	}
 
 	.time{
@@ -46,7 +28,7 @@
 	}
 	.shield{
 		float: right;
-		margin: 2px 10px;
+		margin: 0px 10px;
 	}
 	.band{
 		background: $band;
@@ -54,12 +36,7 @@
 	}
 
 	.card{
-		border-radius:10px;
 		
-		&.question{
-			@include box-shadow(0px 2px 0px 2px #96999D);
-			margin-top: 78px;
-		}
 		&.all-options{
 			@include box-shadow(0px 4px 0px 0px #96999D);
 			margin: 8px 13px;

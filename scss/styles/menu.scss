@@ -7,13 +7,14 @@
 	  text-align: center;
 	  position: relative;
 	  padding-top: 36%;
+	  font-family: "Roboto-Black";
 	}
 	.button-royal{
 		margin: 18px 40px;
-		background-color: rgb(29, 99, 101);
-		-webkit-box-shadow: -3px 3px 5px 0px rgb(188, 253, 255);
-		-moz-box-shadow: -3px 3px 5px 0px rgb(188, 253, 255);
-		box-shadow: -3px 3px 5px 0px rgb(188, 253, 255);
+		background-color: $colorButtons;
+		font-size: 19px;
+		letter-spacing: 1.2px;
+		@include box-shadow(-3px 3px 5px 0px rgb(188, 253, 255));
 	}
 }
 

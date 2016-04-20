@@ -1,3 +1,19 @@
+@font-face {
+  font-family: "Roboto-Black";
+  src: url(../fonts/Roboto-Black.ttf) format("truetype"); }
+
+@font-face {
+  font-family: "Roboto regular";
+  src: url(../fonts/Roboto-Regular.ttf) format("truetype"); }
+
+.card {
+  border-radius: 10px; }
+  .card.question {
+    -webkit-box-shadow: 0px 2px 0px 2px #96999D;
+    -moz-box-shadow: 0px 2px 0px 2px #96999D;
+    box-shadow: 0px 2px 0px 2px #96999D;
+    margin-top: 85px; }
+
 .body {
   background-image: url("../img/background/esteFondo.jpg");
   background-size: cover;
@@ -12,10 +28,13 @@
   .body .image-fight {
     text-align: center;
     position: relative;
-    padding-top: 36%; }
+    padding-top: 36%;
+    font-family: "Roboto-Black"; }
   .body .button-royal {
     margin: 18px 40px;
-    background-color: #1d6365;
+    background-color: #194F50;
+    font-size: 19px;
+    letter-spacing: 1.2px;
     -webkit-box-shadow: -3px 3px 5px 0px #bcfdff;
     -moz-box-shadow: -3px 3px 5px 0px #bcfdff;
     box-shadow: -3px 3px 5px 0px #bcfdff; }
@@ -23,59 +42,47 @@
 .message {
   font-size: 18px; }
 
-.body.incendios {
-  background: #DC7485;
-  background-image: url("../img/background/textureIncendios.png");
-  background-size: cover; }
-
-.body.evacuacion {
-  background: #E3AC8E;
-  background-image: url("../img/background/evacuacionMejor.png");
-  background-size: cover; }
-
-.body.primerosAuxilios {
-  background: #98CCDA;
-  background-image: url("../img/background/texturePrimAuxilios.png");
-  background-size: cover; }
-
-.body .time {
-  height: 60px;
-  width: 60px;
-  margin: 10px;
-  background: #194077;
-  border-radius: 100px;
-  position: absolute; }
-  .body .time .time-in {
-    height: 30px;
-    width: 30px;
-    margin: 14px;
-    background: #FAFAFB;
+.body {
+  font-family: "Roboto regular"; }
+  .body.incendios {
+    background: #F97575;
+    background-image: url("../img/background/texture.png");
+    background-size: cover; }
+  .body.evacuacion {
+    background: #F9AF88;
+    background-image: url("../img/background/texture.png");
+    background-size: cover; }
+  .body.primerosAuxilios {
+    background: #98CCDA;
+    background-image: url("../img/background/texture.png");
+    background-size: cover; }
+  .body .time {
+    height: 60px;
+    width: 60px;
+    margin: 10px;
+    background: #194077;
     border-radius: 100px;
-    position: absolute;
-    z-index: 5; }
-
-.body .container-image {
-  text-align: center; }
-  .body .container-image .image {
-    width: 150px;
-    height: 150px;
-    display: inline-block; }
-
-.body .shield {
-  float: right;
-  margin: 2px 10px; }
-
-.body .band {
-  background: #EDEEF0;
-  height: 25px; }
-
-.body .card {
-  border-radius: 10px; }
-  .body .card.question {
-    -webkit-box-shadow: 0px 2px 0px 2px #96999D;
-    -moz-box-shadow: 0px 2px 0px 2px #96999D;
-    box-shadow: 0px 2px 0px 2px #96999D;
-    margin-top: 78px; }
+    position: absolute; }
+    .body .time .time-in {
+      height: 30px;
+      width: 30px;
+      margin: 14px;
+      background: #FAFAFB;
+      border-radius: 100px;
+      position: absolute;
+      z-index: 5; }
+  .body .container-image {
+    text-align: center; }
+    .body .container-image .image {
+      width: 150px;
+      height: 150px;
+      display: inline-block; }
+  .body .shield {
+    float: right;
+    margin: 0px 10px; }
+  .body .band {
+    background: #EDEEF0;
+    height: 25px; }
   .body .card.all-options {
     -webkit-box-shadow: 0px 4px 0px 0px #96999D;
     -moz-box-shadow: 0px 4px 0px 0px #96999D;
