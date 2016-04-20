@@ -15,6 +15,9 @@
 		@extend .fontsButton;
 		@include box-shadow(-3px 3px 5px 0px rgb(188, 253, 255));
 	}
+	.button.button-royal.active, .button.button-royal.activated{
+		background-color: $colorButtonsActivated;
+	}
 }
 
 .message{

@@ -32,6 +32,7 @@ angular.module('starter', [
 
 		UtilitiesService.loadUser();
 		UtilitiesService.loadSuccessListener();
+		UtilitiesService.initBackButtonController();
 
 	}])
 	.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {

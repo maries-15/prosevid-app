@@ -32,6 +32,7 @@ angular.module('starter', [
 
 		UtilitiesService.loadUser();
 		UtilitiesService.loadSuccessListener();
+		UtilitiesService.initBackButtonController();
 
 	}])
 	.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
@@ -199,8 +200,10 @@ angular.module('questions.controllers', [])
 
 		$scope.data = {};
 		$scope.typeQuestion = "incendios";
-		var acertadas = 0;
-		var fallidas = 0;
+		$scope.answered = {
+			acerts:0,
+			fails:0
+		};
 		var timerOut;
 
 		var questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
@@ -239,8 +242,10 @@ angular.module('questions.controllers', [])
 							return questionsJson[i];
 						});
 					questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
-					acertadas = 0;
-					fallidas = 0;
+					$scope.answered = {
+						acerts:0,
+						fails:0
+					};
 				}
 			});
 		};
@@ -251,12 +256,14 @@ angular.module('questions.controllers', [])
 				console.log("Mostrar time out");
 				setTimeout(function() {
 					jQuery('#blockScreen').css('height', 0);
-					fallidas++;
-					if(fallidas === 3){
+					$scope.answered.fails = $scope.answered.fails + 1;
+					if($scope.answered.fails === 3){
 						console.log("perdio impedido");
 					}
 					else{
-						$state.go('completeQuestion');
+						$state.go('completeQuestion',{
+							'navDirection':'forward'
+						});
 					}
 				}, 1500);
 			}, 18000);
@@ -267,24 +274,28 @@ angular.module('questions.controllers', [])
 			clearTimeout(timerOut);
 			jQuery('#blockScreen').css('height',$rootScope.height);
 			if (answer === $scope.data.opcionCorrecta) {
-				acertadas++;
+				$scope.answered.acerts = $scope.answered.acerts + 1;
 				efectAnsweredQuestion(true, id);
-				if(acertadas === 2){
+				if($scope.answered.acerts === 2){
 					setTimeout(function() {
 						loadNextLevel();
-						$state.go('passLevel');
+						$state.go('passLevel', {
+							'navDirection':'forward'
+						});
 					}, 3600);
 					return;
 				}
 			} else {
-				fallidas++;
+				$scope.answered.fails = $scope.answered.fails + 1;
 				efectAnsweredQuestion(false, id);
-				if(fallidas === 3){
+				if($scope.answered.fails === 3){
 					console.log("perdio impedido");
 				}
 			}
 			setTimeout(function() {
-				$state.go('completeQuestion');
+				$state.go('completeQuestion', {
+					'navDirection':'forward'
+				});
 			}, 3600);
 		};
 
@@ -313,8 +324,9 @@ var applicationConfig = {
 angular.module('services.questions', [])
 	.constant('configApp', applicationConfig)
 	.value('sessionData', {})
-	.service('UtilitiesService',['$localStorage', '$rootScope', 'sessionData', function($localStorage, $rootScope, sessionData) {
+	.service('UtilitiesService',['$ionicHistory', '$ionicPlatform', '$localStorage', '$rootScope', 'sessionData', function($ionicHistory, $ionicPlatform, $localStorage, $rootScope, sessionData) {
 		var services = {};
+		var statesLetButtonBack = ['menuMore', 'ranking', 'trophies'];
 
 		services.createNewArray = function(array){
 			var newArray = [];
@@ -337,7 +349,26 @@ angular.module('services.questions', [])
 					$rootScope.height = jQuery('ion-nav-view').height();
 				}
 			});
-		}
+		};
+
+		services.initBackButtonController = function(){
+			$ionicPlatform.registerBackButtonAction(function(e) {
+
+				if (statesLetButtonBack.indexOf($state.current.name) !== -1) {
+					$ionicHistory.goBack();
+				} else if ($rootScope.backButtonPressedOnceToExit) {
+					ionic.Platform.exitApp();
+				} else if ($state.current.name === 'menu') {
+					$rootScope.backButtonPressedOnceToExit = true;
+					//Mensaje presiona de nuevo para salir
+					setTimeout(function() {
+						$rootScope.backButtonPressedOnceToExit = false;
+					}, 2000);
+				}
+				e.preventDefault();
+				return false;
+			}, 101);
+		};
 		return services;
 	}]);
 

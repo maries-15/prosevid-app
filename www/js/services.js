@@ -8,8 +8,9 @@ var applicationConfig = {
 angular.module('services.questions', [])
 	.constant('configApp', applicationConfig)
 	.value('sessionData', {})
-	.service('UtilitiesService',['$localStorage', '$rootScope', 'sessionData', function($localStorage, $rootScope, sessionData) {
+	.service('UtilitiesService',['$ionicHistory', '$ionicPlatform', '$localStorage', '$rootScope', 'sessionData', function($ionicHistory, $ionicPlatform, $localStorage, $rootScope, sessionData) {
 		var services = {};
+		var statesLetButtonBack = ['menuMore', 'ranking', 'trophies'];
 
 		services.createNewArray = function(array){
 			var newArray = [];
@@ -32,6 +33,25 @@ angular.module('services.questions', [])
 					$rootScope.height = jQuery('ion-nav-view').height();
 				}
 			});
-		}
+		};
+
+		services.initBackButtonController = function(){
+			$ionicPlatform.registerBackButtonAction(function(e) {
+
+				if (statesLetButtonBack.indexOf($state.current.name) !== -1) {
+					$ionicHistory.goBack();
+				} else if ($rootScope.backButtonPressedOnceToExit) {
+					ionic.Platform.exitApp();
+				} else if ($state.current.name === 'menu') {
+					$rootScope.backButtonPressedOnceToExit = true;
+					//Mensaje presiona de nuevo para salir
+					setTimeout(function() {
+						$rootScope.backButtonPressedOnceToExit = false;
+					}, 2000);
+				}
+				e.preventDefault();
+				return false;
+			}, 101);
+		};
 		return services;
 	}]);

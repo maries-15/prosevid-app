@@ -29,16 +29,10 @@
 	position: absolute;
 }
 
-// ----------CLASS GENERAL-------------
-.fontsButton{
-	font-family: "Roboto-Black";
-	font-size: 19px;
-	letter-spacing: 1.2px;
-}
-
 //-----------MENU------------
 
 $colorButtons: #194F50;
+$colorButtonsActivated: #2F7677;
 
 // ---------QUESTIONS---------
 
@@ -46,12 +40,12 @@ $colorButtons: #194F50;
 $backgroungPrimerosAuxilios : #98CCDA; 
 $backgroungIncendios: #F97575;
 $backgroungEvacuacion: #F9AF88;
-//F5BA9B evacuacion jaaa F9AF88
+
+// Backgroung answers
+$answers: #EDEEF0;
 
 // Top bar 
 $band: #EDEEF0;
 
-// Backgroung answers
-$answers: #EDEEF0;
 
 

@@ -1,5 +1,13 @@
 <ion-view>
-	<div> Paso el nivel</div>
-    <a class="button button-block button-royal" href="#/questions" data-ng-click="$root.loadNextQuestion()">Continuar</a>
-    <a class="button button-block button-royal" href="#/menu">Salir</a>
+	<ion-content class="body">
+	Paso de Nivel
+		<div class="barQuestion">
+			<div class="barAnswer"></div>
+			<div class="infoAnswerQuestion">3/7</div>
+		</div>
+		<div class="buttons">
+			<a class="button button-block button-royal" href="#/questions" data-ng-click="$root.loadNextQuestion()" nav-direction="forward">Continuar</a>
+			<a class="button button-block button-royal" href="#/menu">Salir</a>
+		</div>	
+	</ion-content>
 </ion-view>

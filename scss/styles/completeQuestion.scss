@@ -1,0 +1,38 @@
+ .barQuestion{
+ 	height: 19px;
+ 	width: 80%;
+    background: rgba(216, 216, 216, 0.59);
+    margin: 28px 10%;
+    border-radius: 10px;
+
+    .infoAnswerQuestion{
+    	@extend .fontsButton;
+    	position: relative;
+    	margin: 0 43%;
+    	color: #194F50;
+    }
+}   
+
+.barAnswer{
+	height: 19px;
+	width: 30%;
+    background: rgb(34, 243, 8);
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px; 
+    position: absolute;
+}
+
+.cruz{
+	background-image: url("../img/background/cruz.png");
+	width: 150px;
+    height: 150px;
+    margin: 13% 25%;
+    background-size: contain;
+	
+   	.infoCruces{
+   		@extend .fontsButton;
+   		color: #194F50;
+   		padding: 68px 63px;
+   		font-size: 42px;
+   	}
+}

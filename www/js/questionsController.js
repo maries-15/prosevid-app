@@ -5,8 +5,10 @@ angular.module('questions.controllers', [])
 
 		$scope.data = {};
 		$scope.typeQuestion = "incendios";
-		var acertadas = 0;
-		var fallidas = 0;
+		$scope.answered = {
+			acerts:0,
+			fails:0
+		};
 		var timerOut;
 
 		var questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
@@ -45,8 +47,10 @@ angular.module('questions.controllers', [])
 							return questionsJson[i];
 						});
 					questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
-					acertadas = 0;
-					fallidas = 0;
+					$scope.answered = {
+						acerts:0,
+						fails:0
+					};
 				}
 			});
 		};
@@ -57,12 +61,14 @@ angular.module('questions.controllers', [])
 				console.log("Mostrar time out");
 				setTimeout(function() {
 					jQuery('#blockScreen').css('height', 0);
-					fallidas++;
-					if(fallidas === 3){
+					$scope.answered.fails = $scope.answered.fails + 1;
+					if($scope.answered.fails === 3){
 						console.log("perdio impedido");
 					}
 					else{
-						$state.go('completeQuestion');
+						$state.go('completeQuestion',{
+							'navDirection':'forward'
+						});
 					}
 				}, 1500);
 			}, 18000);
@@ -73,24 +79,28 @@ angular.module('questions.controllers', [])
 			clearTimeout(timerOut);
 			jQuery('#blockScreen').css('height',$rootScope.height);
 			if (answer === $scope.data.opcionCorrecta) {
-				acertadas++;
+				$scope.answered.acerts = $scope.answered.acerts + 1;
 				efectAnsweredQuestion(true, id);
-				if(acertadas === 2){
+				if($scope.answered.acerts === 2){
 					setTimeout(function() {
 						loadNextLevel();
-						$state.go('passLevel');
+						$state.go('passLevel', {
+							'navDirection':'forward'
+						});
 					}, 3600);
 					return;
 				}
 			} else {
-				fallidas++;
+				$scope.answered.fails = $scope.answered.fails + 1;
 				efectAnsweredQuestion(false, id);
-				if(fallidas === 3){
+				if($scope.answered.fails === 3){
 					console.log("perdio impedido");
 				}
 			}
 			setTimeout(function() {
-				$state.go('completeQuestion');
+				$state.go('completeQuestion', {
+					'navDirection':'forward'
+				});
 			}, 3600);
 		};
 
