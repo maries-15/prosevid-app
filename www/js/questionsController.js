@@ -1,5 +1,5 @@
 angular.module('questions.controllers', [])
-	.controller('questionsCtrl', ['$scope', '$localStorage', '$state', '$rootScope', '$timeout', 'configApp', 'sessionData', 'UtilitiesService', 
+	.controller('questionsCtrl', ['$scope', '$localStorage', '$state', '$rootScope', '$timeout', 'configApp', 'sessionData', 'UtilitiesService',
 		function($scope, $localStorage, $state, $rootScope, $timeout, configApp, sessionData, UtilitiesService) {
 
 		$scope.data = {};
@@ -17,10 +17,10 @@ angular.module('questions.controllers', [])
 			var questionRandom = parseInt(Math.random() * questionsLevel.length);
 			$scope.data = questionsLevel[questionRandom];
 			questionsLevel.splice(questionRandom, 1);
-				
+
 			if($scope.data.tipo == "incendios"){
 				$scope.typeQuestion = "incendios";
-			} 
+			}
 			else if ($scope.data.tipo == "evacuación") {
 				$scope.typeQuestion = "evacuacion";
 			} else {
@@ -43,7 +43,7 @@ angular.module('questions.controllers', [])
 			saveUser();
 			//Get questions of the next level
 			var questionsRef = new Firebase(configApp.QUESTIONS);
-			questionsRef.child('nivel' + sessionData.user.nivel).once('value', function(snapshot) 
+			questionsRef.child('nivel' + sessionData.user.nivel).once('value', function(snapshot)
 			{
 				if (snapshot.exists()) {
 					var questionsJson = snapshot.val();
@@ -61,8 +61,8 @@ angular.module('questions.controllers', [])
 		};
 
 		var startTimeOutCheck = function(){
-			var seconds = 18;
-			$scope.seconds = 18;
+			var seconds = 20;
+			$scope.seconds = 20;
 			secondsTimer = setInterval(function(){
 				$timeout(function(){
 					seconds = seconds - 1;
@@ -86,16 +86,14 @@ angular.module('questions.controllers', [])
 				setTimeout(function() {
 					setHeightBlockScreen(0);
 					$rootScope.answered.fails = $rootScope.answered.fails + 1;
-					if($rootScope.answered.fails === 3){
-						alert('Lo sentimos has perdido el nivel');
+					if(questionsLevel.length === 0){
+						questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
 					}
-					else{
-						$state.go('completeQuestion',{
-							'navDirection':'forward'
-						});
-					}
+					$state.go('completeQuestion',{
+						'navDirection':'forward'
+					});
 				}, 1500);
-			}, 18000);
+			}, 20000);
 		};
 
 		$scope.validateAnswer = function(answer, id) {
@@ -122,7 +120,7 @@ angular.module('questions.controllers', [])
 				efectAnsweredQuestion(false, id);
 				if(questionsLevel.length === 0){
 					questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
-				}		
+				}
 			};
 
 			if (answer === $scope.data.opcionCorrecta) {

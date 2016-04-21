@@ -77,5 +77,6 @@ angular.module('starter', [
 			});
 
 		// if none of the above states are matched, use this as the fallback
+		console.log('Hi');
 		$urlRouterProvider.otherwise('/login');
 	}]);

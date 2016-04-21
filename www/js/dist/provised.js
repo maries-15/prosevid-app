@@ -77,13 +77,13 @@ angular.module('starter', [
 			});
 
 		// if none of the above states are matched, use this as the fallback
+		console.log('Hi');
 		$urlRouterProvider.otherwise('/login');
 	}]);
 
 angular.module('starter.controllers', [])
 	.controller('completeQuestionCtrl',['$rootScope', function($rootScope){
 		jQuery('.barAnswer').css('width', (($rootScope.answered.acerts/6)*100) +'%');
-		console.log('cargo');
 	}])
 	.controller('rankingCtrl', ['$scope', function($scope) {
 		$scope.usersRanking = [];
@@ -127,27 +127,6 @@ angular.module('login.controller', [])
 		$scope.registerUser = function() {
 			$ionicLoading.show({
 				template: 'Autenticando...'
-			});
-
-			var ref = new Firebase(configApp.USERS);
-			
-			ref.child('anma2510').once('value', function(snapshot) {
-				if (snapshot.exists()) {
-					sessionData.user = snapshot.val();
-					$localStorage.user = snapshot.val();
-					var questionsRef = new Firebase(configApp.QUESTIONS);
-					questionsRef.child('nivel' + sessionData.user.nivel).once('value', function(snapshotQ) {
-						if (snapshotQ.exists()) {
-							var questionsJson = snapshotQ.val();
-							$localStorage.Questions = Object.keys(questionsJson).map(
-								function(i) {
-									return questionsJson[i];
-								});
-							$ionicLoading.hide();
-							$state.go('menu');
-						}
-					});
-				}
 			});
 
 			var ref = new Firebase(configApp.USERS);
@@ -206,7 +185,7 @@ angular.module('login.controller', [])
 	}]);
 
 angular.module('questions.controllers', [])
-	.controller('questionsCtrl', ['$scope', '$localStorage', '$state', '$rootScope', '$timeout', 'configApp', 'sessionData', 'UtilitiesService', 
+	.controller('questionsCtrl', ['$scope', '$localStorage', '$state', '$rootScope', '$timeout', 'configApp', 'sessionData', 'UtilitiesService',
 		function($scope, $localStorage, $state, $rootScope, $timeout, configApp, sessionData, UtilitiesService) {
 
 		$scope.data = {};
@@ -224,10 +203,10 @@ angular.module('questions.controllers', [])
 			var questionRandom = parseInt(Math.random() * questionsLevel.length);
 			$scope.data = questionsLevel[questionRandom];
 			questionsLevel.splice(questionRandom, 1);
-				
+
 			if($scope.data.tipo == "incendios"){
 				$scope.typeQuestion = "incendios";
-			} 
+			}
 			else if ($scope.data.tipo == "evacuación") {
 				$scope.typeQuestion = "evacuacion";
 			} else {
@@ -250,7 +229,7 @@ angular.module('questions.controllers', [])
 			saveUser();
 			//Get questions of the next level
 			var questionsRef = new Firebase(configApp.QUESTIONS);
-			questionsRef.child('nivel' + sessionData.user.nivel).once('value', function(snapshot) 
+			questionsRef.child('nivel' + sessionData.user.nivel).once('value', function(snapshot)
 			{
 				if (snapshot.exists()) {
 					var questionsJson = snapshot.val();
@@ -268,8 +247,8 @@ angular.module('questions.controllers', [])
 		};
 
 		var startTimeOutCheck = function(){
-			var seconds = 18;
-			$scope.seconds = 18;
+			var seconds = 20;
+			$scope.seconds = 20;
 			secondsTimer = setInterval(function(){
 				$timeout(function(){
 					seconds = seconds - 1;
@@ -293,16 +272,14 @@ angular.module('questions.controllers', [])
 				setTimeout(function() {
 					setHeightBlockScreen(0);
 					$rootScope.answered.fails = $rootScope.answered.fails + 1;
-					if($rootScope.answered.fails === 3){
-						alert('Lo sentimos has perdido el nivel');
+					if(questionsLevel.length === 0){
+						questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
 					}
-					else{
-						$state.go('completeQuestion',{
-							'navDirection':'forward'
-						});
-					}
+					$state.go('completeQuestion',{
+						'navDirection':'forward'
+					});
 				}, 1500);
-			}, 18000);
+			}, 20000);
 		};
 
 		$scope.validateAnswer = function(answer, id) {
@@ -329,7 +306,7 @@ angular.module('questions.controllers', [])
 				efectAnsweredQuestion(false, id);
 				if(questionsLevel.length === 0){
 					questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
-				}		
+				}
 			};
 
 			if (answer === $scope.data.opcionCorrecta) {
@@ -358,6 +335,7 @@ angular.module('questions.controllers', [])
 		};
 		loadQuestion();
 	}]);
+
 var firebaseRef = 'https://prosevid-app.firebaseio.com/';
 var applicationConfig = {
 	REF: firebaseRef,
@@ -368,7 +346,7 @@ var applicationConfig = {
 angular.module('services.questions', [])
 	.constant('configApp', applicationConfig)
 	.value('sessionData', {})
-	.service('UtilitiesService',['$ionicHistory', '$ionicPlatform', '$localStorage', '$rootScope', 'sessionData', function($ionicHistory, $ionicPlatform, $localStorage, $rootScope, sessionData) {
+	.service('UtilitiesService',['$ionicHistory', '$ionicPlatform', '$localStorage', '$location', '$state', '$rootScope', 'sessionData', function($ionicHistory, $ionicPlatform, $localStorage, $location, $state, $rootScope, sessionData) {
 		var services = {};
 		var statesLetButtonBack = ['menuMore', 'ranking', 'trophies'];
 
@@ -383,6 +361,7 @@ angular.module('services.questions', [])
 		services.loadUser = function(){
 			if($localStorage.user){
 				sessionData.user = $localStorage.user;
+				$location.path('/menu');
 			};
 		};
 
@@ -446,7 +425,7 @@ function stopWatch(){
 
 function startTimer(){
 	timerCurrent = 0;
-	timerSeconds = 18;
+	timerSeconds = 20;
 	timerFinish = new Date().getTime()+(timerSeconds*1000);
 	drawTimer(100);
 	timer = setInterval('stopWatch()',50);

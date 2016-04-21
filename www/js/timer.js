@@ -28,7 +28,7 @@ function stopWatch(){
 
 function startTimer(){
 	timerCurrent = 0;
-	timerSeconds = 18;
+	timerSeconds = 20;
 	timerFinish = new Date().getTime()+(timerSeconds*1000);
 	drawTimer(100);
 	timer = setInterval('stopWatch()',50);

@@ -8,7 +8,7 @@ var applicationConfig = {
 angular.module('services.questions', [])
 	.constant('configApp', applicationConfig)
 	.value('sessionData', {})
-	.service('UtilitiesService',['$ionicHistory', '$ionicPlatform', '$localStorage', '$rootScope', 'sessionData', function($ionicHistory, $ionicPlatform, $localStorage, $rootScope, sessionData) {
+	.service('UtilitiesService',['$ionicHistory', '$ionicPlatform', '$localStorage', '$location', '$state', '$rootScope', 'sessionData', function($ionicHistory, $ionicPlatform, $localStorage, $location, $state, $rootScope, sessionData) {
 		var services = {};
 		var statesLetButtonBack = ['menuMore', 'ranking', 'trophies'];
 
@@ -23,6 +23,7 @@ angular.module('services.questions', [])
 		services.loadUser = function(){
 			if($localStorage.user){
 				sessionData.user = $localStorage.user;
+				$location.path('/menu');
 			};
 		};
 

@@ -9,27 +9,6 @@ angular.module('login.controller', [])
 			});
 
 			var ref = new Firebase(configApp.USERS);
-			
-			ref.child('anma2510').once('value', function(snapshot) {
-				if (snapshot.exists()) {
-					sessionData.user = snapshot.val();
-					$localStorage.user = snapshot.val();
-					var questionsRef = new Firebase(configApp.QUESTIONS);
-					questionsRef.child('nivel' + sessionData.user.nivel).once('value', function(snapshotQ) {
-						if (snapshotQ.exists()) {
-							var questionsJson = snapshotQ.val();
-							$localStorage.Questions = Object.keys(questionsJson).map(
-								function(i) {
-									return questionsJson[i];
-								});
-							$ionicLoading.hide();
-							$state.go('menu');
-						}
-					});
-				}
-			});
-
-			var ref = new Firebase(configApp.USERS);
 			window.plugins.googleplus.login({
 					'offline': true,
 				},
