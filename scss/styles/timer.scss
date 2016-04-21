@@ -1,10 +1,8 @@
 .timer {
-	position: relative;
-    font-size: 51px;
-    width: 1em;
-    height: 1em;
-    float: left;
-    margin: 4px;
+    position: relative;
+    font-size: 55px;
+    margin: 7.6px;
+    z-index: 6;
 }
 .timer > .percent 
 {
@@ -28,7 +26,6 @@
 }
 
 .timer > #slice > .pie {
-	border: 0.1em solid #82BEDF;
 	position:absolute;
 	width:0.8em; /* 1 - (2 * border width) */
 	height:0.8em; /* 1 - (2 * border width) */
@@ -51,7 +48,6 @@
 
 .timer.fill > #slice > .pie {
 	border: transparent;
-	background-color: #82BEDF;
 	width:1em;
 	height:1em;
 }

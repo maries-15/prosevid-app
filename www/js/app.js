@@ -54,7 +54,8 @@ angular.module('starter', [
 			})
 			.state('completeQuestion', {
 				url:'/completeQuestion',
-				templateUrl: "templates/completeQuestion.html"
+				templateUrl: "templates/completeQuestion.html",
+				controller: 'completeQuestionCtrl'
 			})
 			.state('passLevel', {
 				url:'/passLevel',

@@ -6,16 +6,29 @@
 	}
 	&.evacuacion{
 		@include background($backgroungEvacuacion);
+
 	}
 	&.primerosAuxilios{
 		@include background($backgroungPrimerosAuxilios);
 	}
 
-	.time{
-		@include circle(60px, 10px, #194077);
-		.time-in{
-			@include circle(30px, 14px, #FAFAFB);
+	.border-clock{
+		@include circle(70px, 5px, #194077);
+		.inside-circle{
+			@include circle(55px, 7.5px, #FAFAFB);
     		z-index: 5;
+		}
+		.middle-circle{
+			@include circle(27px, 21.9px, #194077);
+			z-index: 7;
+			.seconds{
+				position: absolute;
+			    top: 3px;
+    			left: 5.3px;
+			    color: #FFF;
+			    font-size: 15px;
+			    font-weight: 400;
+			}
 		}
 	}
 	.container-image{

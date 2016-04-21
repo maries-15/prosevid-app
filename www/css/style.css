@@ -66,29 +66,56 @@
     background: #F97575;
     background-image: url("../img/background/texture.png");
     background-size: cover; }
+    .body.incendios .timer > #slice > .pie {
+      border: 0.1em solid #F97575; }
+    .body.incendios .timer.fill > #slice > .pie {
+      background: #F97575; }
   .body.evacuacion {
     background: #F9AF88;
     background-image: url("../img/background/texture.png");
     background-size: cover; }
+    .body.evacuacion .timer > #slice > .pie {
+      border: 0.1em solid #F9AF88; }
+    .body.evacuacion .timer.fill > #slice > .pie {
+      background: #F9AF88; }
   .body.primerosAuxilios {
     background: #98CCDA;
     background-image: url("../img/background/texture.png");
     background-size: cover; }
-  .body .time {
-    height: 60px;
-    width: 60px;
-    margin: 10px;
+    .body.primerosAuxilios .timer > #slice > .pie {
+      border: 0.1em solid #98CCDA; }
+    .body.primerosAuxilios .timer.fill > #slice > .pie {
+      background: #98CCDA; }
+  .body .border-clock {
+    height: 70px;
+    width: 70px;
+    margin: 5px;
     background: #194077;
     border-radius: 100px;
     position: absolute; }
-    .body .time .time-in {
-      height: 30px;
-      width: 30px;
-      margin: 14px;
+    .body .border-clock .inside-circle {
+      height: 55px;
+      width: 55px;
+      margin: 7.5px;
       background: #FAFAFB;
       border-radius: 100px;
       position: absolute;
       z-index: 5; }
+    .body .border-clock .middle-circle {
+      height: 27px;
+      width: 27px;
+      margin: 21.9px;
+      background: #194077;
+      border-radius: 100px;
+      position: absolute;
+      z-index: 7; }
+      .body .border-clock .middle-circle .seconds {
+        position: absolute;
+        top: 3px;
+        left: 5.3px;
+        color: #FFF;
+        font-size: 15px;
+        font-weight: 400; }
   .body .container-image {
     text-align: center; }
     .body .container-image .image {
@@ -112,11 +139,9 @@
 
 .timer {
   position: relative;
-  font-size: 51px;
-  width: 1em;
-  height: 1em;
-  float: left;
-  margin: 4px; }
+  font-size: 55px;
+  margin: 7.6px;
+  z-index: 6; }
 
 .timer > .percent {
   position: absolute;
@@ -136,7 +161,6 @@
   clip: rect(auto, auto, auto, auto); }
 
 .timer > #slice > .pie {
-  border: 0.1em solid #82BEDF;
   position: absolute;
   width: 0.8em;
   /* 1 - (2 * border width) */
@@ -158,28 +182,35 @@
 
 .timer.fill > #slice > .pie {
   border: transparent;
-  background-color: #82BEDF;
   width: 1em;
   height: 1em; }
 
 .barQuestion {
+  position: relative;
   height: 19px;
   width: 80%;
   background: rgba(216, 216, 216, 0.59);
   margin: 28px 10%;
   border-radius: 10px; }
   .barQuestion .infoAnswerQuestion {
-    position: relative;
-    margin: 0 43%;
+    position: absolute;
+    top: 0;
+    left: 45%;
     color: #194F50; }
 
 .barAnswer {
   height: 19px;
-  width: 30%;
+  width: 0;
   background: #22f308;
-  border-bottom-left-radius: 10px;
-  border-top-left-radius: 10px;
-  position: absolute; }
+  border-radius: 10px;
+  position: relative; }
+
+.barAnswerPass {
+  height: 19px;
+  width: 100%;
+  background: #22f308;
+  border-radius: 10px;
+  position: relative; }
 
 .cruz {
   background-image: url("../img/background/cruz.png");
@@ -189,5 +220,6 @@
   background-size: contain; }
   .cruz .infoCruces {
     color: #194F50;
-    padding: 68px 63px;
-    font-size: 42px; }
+    padding: 67px 52px;
+    font-size: 23px;
+    text-align: center; }

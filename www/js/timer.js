@@ -61,3 +61,7 @@ function efectAnsweredQuestion(correct, id){
         }
     }, 500)
 }
+
+function setHeightBlockScreen(height){
+    jQuery('#blockScreen').css('height',height);
+}

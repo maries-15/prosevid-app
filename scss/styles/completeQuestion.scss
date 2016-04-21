@@ -1,4 +1,5 @@
  .barQuestion{
+  position: relative;
  	height: 19px;
  	width: 80%;
     background: rgba(216, 216, 216, 0.59);
@@ -7,19 +8,26 @@
 
     .infoAnswerQuestion{
     	@extend .fontsButton;
-    	position: relative;
-    	margin: 0 43%;
-    	color: #194F50;
+      position: absolute;
+      top: 0;
+      left: 45%;
+      color: #194F50;
     }
 }   
 
 .barAnswer{
 	height: 19px;
-	width: 30%;
-    background: rgb(34, 243, 8);
-    border-bottom-left-radius: 10px;
-    border-top-left-radius: 10px; 
-    position: absolute;
+  width: 0;
+  background: rgb(34, 243, 8);
+  border-radius: 10px;
+  position: relative;
+}
+.barAnswerPass{
+  height: 19px;
+  width: 100%;
+  background: rgb(34, 243, 8);
+  border-radius: 10px;
+  position: relative;
 }
 
 .cruz{
@@ -32,7 +40,8 @@
    	.infoCruces{
    		@extend .fontsButton;
    		color: #194F50;
-   		padding: 68px 63px;
-   		font-size: 42px;
+      padding: 67px 52px;
+      font-size: 23px;
+      text-align: center;
    	}
 }

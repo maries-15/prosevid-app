@@ -54,7 +54,8 @@ angular.module('starter', [
 			})
 			.state('completeQuestion', {
 				url:'/completeQuestion',
-				templateUrl: "templates/completeQuestion.html"
+				templateUrl: "templates/completeQuestion.html",
+				controller: 'completeQuestionCtrl'
 			})
 			.state('passLevel', {
 				url:'/passLevel',
@@ -80,6 +81,10 @@ angular.module('starter', [
 	}]);
 
 angular.module('starter.controllers', [])
+	.controller('completeQuestionCtrl',['$rootScope', function($rootScope){
+		jQuery('.barAnswer').css('width', (($rootScope.answered.acerts/6)*100) +'%');
+		console.log('cargo');
+	}])
 	.controller('rankingCtrl', ['$scope', function($scope) {
 		$scope.usersRanking = [];
 		for (var i = 0; i < 8; i++) {
@@ -124,17 +129,14 @@ angular.module('login.controller', [])
 				template: 'Autenticando...'
 			});
 
-			/**var ref = new Firebase(configApp.USERS);
+			var ref = new Firebase(configApp.USERS);
+			
 			ref.child('anma2510').once('value', function(snapshot) {
 				if (snapshot.exists()) {
-					user = snapshot.val();
-					user.key = snapshot.key();
-					sessionData.user = user;
-					$localStorage.user = user;
-
+					sessionData.user = snapshot.val();
+					$localStorage.user = snapshot.val();
 					var questionsRef = new Firebase(configApp.QUESTIONS);
-					console.log(user.nivel);
-					questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {
+					questionsRef.child('nivel' + sessionData.user.nivel).once('value', function(snapshotQ) {
 						if (snapshotQ.exists()) {
 							var questionsJson = snapshotQ.val();
 							$localStorage.Questions = Object.keys(questionsJson).map(
@@ -146,7 +148,7 @@ angular.module('login.controller', [])
 						}
 					});
 				}
-			});**/
+			});
 
 			var ref = new Firebase(configApp.USERS);
 			window.plugins.googleplus.login({
@@ -154,36 +156,46 @@ angular.module('login.controller', [])
 				},
 				function(obj) {
 					console.log(JSON.stringify(obj));
-
-					var user = {
-						email: obj.email,
-						nombre: obj.displayName,
-						image: obj.imageUrl,
-						nivel: 1,
-						key: obj.email.match(/^([^@]*)@/)[1]
-					};
-					
 					//verificar, si el usuario esta creado, de ser asi traerlo de la BD, de lo contrario guardar
-					ref.child(user.key).once('value', function(snapshot) {
+					var key = obj.email.match(/^([^@]*)@/)[1];
+					var user;
+					ref.child(key).once('value', function(snapshot) {
+
 						if (snapshot.exists()) {
 							user = snapshot.val();
-							user.key = snapshot.key();
-							sessionData.user = user;
-							$localStorage.user = user;
-
-							var questionsRef = new Firebase(configApp.QUESTIONS);
-							questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {
-								if (snapshotQ.exists()) {
-									var questionsJson = snapshotQ.val();
-									$localStorage.Questions = Object.keys(questionsJson).map(
-										function(i) {
-											return questionsJson[i];
-										});
-									$ionicLoading.hide();
-									$state.go('menu');
-								}
-							});
 						}
+						else {
+							user = {
+								email: obj.email,
+								nombre: obj.displayName,
+								image: obj.imageUrl,
+								nivel: 1,
+								key: key,
+								preguntasAcertadas: {
+									incendios:0,
+									evacuacion:0,
+									primerosAuxilios:0
+								},
+								preguntasErroneas: 0,
+								preguntasAcertadasT: 0
+							};
+							ref.child(user.key).set(user);
+						}
+
+						sessionData.user = user;
+						$localStorage.user = user;
+						var questionsRef = new Firebase(configApp.QUESTIONS);
+						questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {
+							if (snapshotQ.exists()) {
+								var questionsJson = snapshotQ.val();
+								$localStorage.Questions = Object.keys(questionsJson).map(
+									function(i) {
+										return questionsJson[i];
+									});
+								$ionicLoading.hide();
+								$state.go('menu');
+							}
+						});
 					});
 				},
 				function(msg) {
@@ -197,16 +209,16 @@ angular.module('questions.controllers', [])
 	.controller('questionsCtrl', ['$scope', '$localStorage', '$state', '$rootScope', '$timeout', 'configApp', 'sessionData', 'UtilitiesService', 
 		function($scope, $localStorage, $state, $rootScope, $timeout, configApp, sessionData, UtilitiesService) {
 
-
 		$scope.data = {};
 		$scope.typeQuestion = "incendios";
-		$scope.answered = {
+		$rootScope.totalQuestios = sessionData.user.preguntasAcertadasT;
+		$rootScope.answered = {
 			acerts:0,
 			fails:0
 		};
-		var timerOut;
-
 		var questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
+		var timerOut;
+		var secondsTimer;
 
 		var loadQuestion = function() {
 			var questionRandom = parseInt(Math.random() * questionsLevel.length);
@@ -225,16 +237,21 @@ angular.module('questions.controllers', [])
 			startTimeOutCheck();
 		};
 
+		var saveUser = function(){
+			$rootScope.totalQuestios = sessionData.user.preguntasAcertadasT;
+			var ref = new Firebase(configApp.USERS + "/"+ sessionData.user.key);
+			ref.update(sessionData.user);
+			$localStorage.user = sessionData.user;
+		};
+
 		var loadNextLevel = function(){
 			//Update user level in database
-			var ref = new Firebase(configApp.USERS + "/"+ sessionData.user.key);
 			sessionData.user.nivel = sessionData.user.nivel + 1;
-			ref.update({nivel: sessionData.user.nivel});
-			$localStorage.user = sessionData.user;
-
+			saveUser();
 			//Get questions of the next level
 			var questionsRef = new Firebase(configApp.QUESTIONS);
-			questionsRef.child('nivel' + sessionData.user.nivel).once('value', function(snapshot) {
+			questionsRef.child('nivel' + sessionData.user.nivel).once('value', function(snapshot) 
+			{
 				if (snapshot.exists()) {
 					var questionsJson = snapshot.val();
 					$localStorage.Questions = Object.keys(questionsJson).map(
@@ -242,7 +259,7 @@ angular.module('questions.controllers', [])
 							return questionsJson[i];
 						});
 					questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
-					$scope.answered = {
+					$rootScope.answered = {
 						acerts:0,
 						fails:0
 					};
@@ -251,14 +268,33 @@ angular.module('questions.controllers', [])
 		};
 
 		var startTimeOutCheck = function(){
+			var seconds = 18;
+			$scope.seconds = 18;
+			secondsTimer = setInterval(function(){
+				$timeout(function(){
+					seconds = seconds - 1;
+					if(seconds > 9){
+						$scope.seconds = seconds;
+					}
+					else{
+						$scope.seconds = "0" + seconds;
+					}
+					if($scope.seconds === "00"){
+						clearInterval(secondsTimer);
+					}
+				})
+			}, 1000);
+
 			timerOut = setTimeout(function() {
-				jQuery('#blockScreen').css('height',$rootScope.height);
-				console.log("Mostrar time out");
+				setHeightBlockScreen($rootScope.height);
+				alert("Mostrar time out");
+				sessionData.user.preguntasErroneas = sessionData.user.preguntasErroneas + 1;
+				saveUser();
 				setTimeout(function() {
-					jQuery('#blockScreen').css('height', 0);
-					$scope.answered.fails = $scope.answered.fails + 1;
-					if($scope.answered.fails === 3){
-						console.log("perdio impedido");
+					setHeightBlockScreen(0);
+					$rootScope.answered.fails = $rootScope.answered.fails + 1;
+					if($rootScope.answered.fails === 3){
+						alert('Lo sentimos has perdido el nivel');
 					}
 					else{
 						$state.go('completeQuestion',{
@@ -272,11 +308,33 @@ angular.module('questions.controllers', [])
 		$scope.validateAnswer = function(answer, id) {
 			stopTimer();
 			clearTimeout(timerOut);
-			jQuery('#blockScreen').css('height',$rootScope.height);
-			if (answer === $scope.data.opcionCorrecta) {
-				$scope.answered.acerts = $scope.answered.acerts + 1;
+			clearInterval(secondsTimer);
+			setHeightBlockScreen($rootScope.height);
+
+			var acertQuestion = function(){
+				sessionData.user.preguntasAcertadas[$scope.typeQuestion] = sessionData.user.preguntasAcertadas[$scope.typeQuestion] + 1;
+				sessionData.user.preguntasAcertadasT = sessionData.user.preguntasAcertadasT + 1;
+				saveUser();
+
+				$rootScope.answered.acerts = $rootScope.answered.acerts + 1;
 				efectAnsweredQuestion(true, id);
-				if($scope.answered.acerts === 2){
+				jQuery('.barAnswer').css('width', (($rootScope.answered.acerts/6)*100) +'%');
+			};
+
+			var failQuestion = function(){
+				sessionData.user.preguntasErroneas = sessionData.user.preguntasErroneas + 1;
+				saveUser();
+
+				$rootScope.answered.fails = $rootScope.answered.fails + 1;
+				efectAnsweredQuestion(false, id);
+				if(questionsLevel.length === 0){
+					questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
+				}		
+			};
+
+			if (answer === $scope.data.opcionCorrecta) {
+				acertQuestion();
+				if($rootScope.answered.acerts === 6){
 					setTimeout(function() {
 						loadNextLevel();
 						$state.go('passLevel', {
@@ -286,11 +344,7 @@ angular.module('questions.controllers', [])
 					return;
 				}
 			} else {
-				$scope.answered.fails = $scope.answered.fails + 1;
-				efectAnsweredQuestion(false, id);
-				if($scope.answered.fails === 3){
-					console.log("perdio impedido");
-				}
+				failQuestion();
 			}
 			setTimeout(function() {
 				$state.go('completeQuestion', {
@@ -299,21 +353,11 @@ angular.module('questions.controllers', [])
 			}, 3600);
 		};
 
-		$scope.$on('loadQuestion', function(event, response) {
-			loadQuestion();
-		});
-
-		$scope.$on('loadNextLevel', function(event, response){
-			loadNextLevel();
-		});
-
 		$rootScope.loadNextQuestion = function(){
 			loadQuestion();
 		};
-
 		loadQuestion();
 	}]);
-
 var firebaseRef = 'https://prosevid-app.firebaseio.com/';
 var applicationConfig = {
 	REF: firebaseRef,
@@ -434,4 +478,8 @@ function efectAnsweredQuestion(correct, id){
             }, 1500);
         }
     }, 500)
+}
+
+function setHeightBlockScreen(height){
+    jQuery('#blockScreen').css('height',height);
 }

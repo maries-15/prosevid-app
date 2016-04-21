@@ -8,17 +8,14 @@ angular.module('login.controller', [])
 				template: 'Autenticando...'
 			});
 
-			/**var ref = new Firebase(configApp.USERS);
+			var ref = new Firebase(configApp.USERS);
+			
 			ref.child('anma2510').once('value', function(snapshot) {
 				if (snapshot.exists()) {
-					user = snapshot.val();
-					user.key = snapshot.key();
-					sessionData.user = user;
-					$localStorage.user = user;
-
+					sessionData.user = snapshot.val();
+					$localStorage.user = snapshot.val();
 					var questionsRef = new Firebase(configApp.QUESTIONS);
-					console.log(user.nivel);
-					questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {
+					questionsRef.child('nivel' + sessionData.user.nivel).once('value', function(snapshotQ) {
 						if (snapshotQ.exists()) {
 							var questionsJson = snapshotQ.val();
 							$localStorage.Questions = Object.keys(questionsJson).map(
@@ -30,7 +27,7 @@ angular.module('login.controller', [])
 						}
 					});
 				}
-			});**/
+			});
 
 			var ref = new Firebase(configApp.USERS);
 			window.plugins.googleplus.login({
@@ -38,36 +35,46 @@ angular.module('login.controller', [])
 				},
 				function(obj) {
 					console.log(JSON.stringify(obj));
-
-					var user = {
-						email: obj.email,
-						nombre: obj.displayName,
-						image: obj.imageUrl,
-						nivel: 1,
-						key: obj.email.match(/^([^@]*)@/)[1]
-					};
-					
 					//verificar, si el usuario esta creado, de ser asi traerlo de la BD, de lo contrario guardar
-					ref.child(user.key).once('value', function(snapshot) {
+					var key = obj.email.match(/^([^@]*)@/)[1];
+					var user;
+					ref.child(key).once('value', function(snapshot) {
+
 						if (snapshot.exists()) {
 							user = snapshot.val();
-							user.key = snapshot.key();
-							sessionData.user = user;
-							$localStorage.user = user;
-
-							var questionsRef = new Firebase(configApp.QUESTIONS);
-							questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {
-								if (snapshotQ.exists()) {
-									var questionsJson = snapshotQ.val();
-									$localStorage.Questions = Object.keys(questionsJson).map(
-										function(i) {
-											return questionsJson[i];
-										});
-									$ionicLoading.hide();
-									$state.go('menu');
-								}
-							});
 						}
+						else {
+							user = {
+								email: obj.email,
+								nombre: obj.displayName,
+								image: obj.imageUrl,
+								nivel: 1,
+								key: key,
+								preguntasAcertadas: {
+									incendios:0,
+									evacuacion:0,
+									primerosAuxilios:0
+								},
+								preguntasErroneas: 0,
+								preguntasAcertadasT: 0
+							};
+							ref.child(user.key).set(user);
+						}
+
+						sessionData.user = user;
+						$localStorage.user = user;
+						var questionsRef = new Firebase(configApp.QUESTIONS);
+						questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {
+							if (snapshotQ.exists()) {
+								var questionsJson = snapshotQ.val();
+								$localStorage.Questions = Object.keys(questionsJson).map(
+									function(i) {
+										return questionsJson[i];
+									});
+								$ionicLoading.hide();
+								$state.go('menu');
+							}
+						});
 					});
 				},
 				function(msg) {
