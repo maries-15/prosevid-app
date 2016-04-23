@@ -30,7 +30,7 @@ angular.module('starter', [
 			}
 		});
 
-		UtilitiesService.loadUser();
+		UtilitiesService.loadDataUser();
 		UtilitiesService.loadSuccessListener();
 		UtilitiesService.initBackButtonController();
 

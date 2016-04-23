@@ -20,11 +20,17 @@ angular.module('services.questions', [])
 			return newArray;
 		};
 
-		services.loadUser = function(){
+		services.loadDataUser = function(){
 			if($localStorage.user){
 				sessionData.user = $localStorage.user;
 				$location.path('/menu');
-			};
+			}
+			if($localStorage.questionSession === undefined){
+				$localStorage.questionSession = {
+					acerts:0,
+					fails:0
+				};
+			}
 		};
 
 		services.loadSuccessListener = function(){

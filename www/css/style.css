@@ -220,8 +220,8 @@
   background-image: url("../img/background/cruz.png");
   width: 150px;
   height: 150px;
-  margin: 13% 25%;
-  background-size: contain; }
+  background-size: contain;
+  margin: 0 auto; }
   .cruz .infoCruces {
     color: #194F50;
     padding: 67px 52px;

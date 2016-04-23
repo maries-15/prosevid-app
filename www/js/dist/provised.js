@@ -30,7 +30,7 @@ angular.module('starter', [
 			}
 		});
 
-		UtilitiesService.loadUser();
+		UtilitiesService.loadDataUser();
 		UtilitiesService.loadSuccessListener();
 		UtilitiesService.initBackButtonController();
 
@@ -130,6 +130,38 @@ angular.module('login.controller', [])
 			});
 
 			var ref = new Firebase(configApp.USERS);
+			user = {
+				email: 'anma2510@gmail.com',
+				nombre: 'Andrea Marin',
+				image: 'Alguna imagen',
+				nivel: 1,
+				key: 'anma2510',
+				preguntasAcertadas: {
+					incendios:0,
+					evacuacion:0,
+					primerosAuxilios:0
+				},
+				preguntasErroneas: 0,
+				preguntasAcertadasT: 0
+			};
+			ref.child(user.key).set(user);
+
+			sessionData.user = user;
+			$localStorage.user = user;
+			var questionsRef = new Firebase(configApp.QUESTIONS);
+			questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {
+				if (snapshotQ.exists()) {
+					var questionsJson = snapshotQ.val();
+					$localStorage.Questions = Object.keys(questionsJson).map(
+						function(i) {
+							return questionsJson[i];
+						});
+					$ionicLoading.hide();
+					$state.go('menu');
+				}
+			});
+
+
 			window.plugins.googleplus.login({
 					'offline': true,
 				},
@@ -191,13 +223,19 @@ angular.module('questions.controllers', [])
 		$scope.data = {};
 		$scope.typeQuestion = "incendios";
 		$rootScope.totalQuestios = sessionData.user.preguntasAcertadasT;
-		$rootScope.answered = {
-			acerts:0,
-			fails:0
-		};
-		var questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
+		$rootScope.answered = $localStorage.questionSession;
+		var questionsLevel;
 		var timerOut;
 		var secondsTimer;
+
+
+		if($localStorage.questionsLevel === undefined){
+			questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
+			$localStorage.questionsLevel = questionsLevel;
+		}
+		else{
+			questionsLevel = $localStorage.questionsLevel;
+		}
 
 		var loadQuestion = function() {
 			var questionRandom = parseInt(Math.random() * questionsLevel.length);
@@ -214,6 +252,11 @@ angular.module('questions.controllers', [])
 			}
 			startTimer();
 			startTimeOutCheck();
+
+			if(Object.keys(questionsLevel).length === 0){
+				questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
+				$localStorage.questionsLevel = questionsLevel;
+			}
 		};
 
 		var saveUser = function(){
@@ -238,10 +281,12 @@ angular.module('questions.controllers', [])
 							return questionsJson[i];
 						});
 					questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
-					$rootScope.answered = {
+					$localStorage.questionsLevel = questionsLevel;
+					$localStorage.questionSession = {
 						acerts:0,
 						fails:0
 					};
+					$rootScope.answered = $localStorage.questionSession;
 				}
 			});
 		};
@@ -272,9 +317,7 @@ angular.module('questions.controllers', [])
 				setTimeout(function() {
 					setHeightBlockScreen(0);
 					$rootScope.answered.fails = $rootScope.answered.fails + 1;
-					if(questionsLevel.length === 0){
-						questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
-					}
+					jQuery('.barAnswer').css('width', (($rootScope.answered.acerts/6)*100) +'%');
 					$state.go('completeQuestion',{
 						'navDirection':'forward'
 					});
@@ -301,12 +344,9 @@ angular.module('questions.controllers', [])
 			var failQuestion = function(){
 				sessionData.user.preguntasErroneas = sessionData.user.preguntasErroneas + 1;
 				saveUser();
-
 				$rootScope.answered.fails = $rootScope.answered.fails + 1;
 				efectAnsweredQuestion(false, id);
-				if(questionsLevel.length === 0){
-					questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
-				}
+				jQuery('.barAnswer').css('width', (($rootScope.answered.acerts/6)*100) +'%');
 			};
 
 			if (answer === $scope.data.opcionCorrecta) {
@@ -358,11 +398,17 @@ angular.module('services.questions', [])
 			return newArray;
 		};
 
-		services.loadUser = function(){
+		services.loadDataUser = function(){
 			if($localStorage.user){
 				sessionData.user = $localStorage.user;
 				$location.path('/menu');
-			};
+			}
+			if($localStorage.questionSession === undefined){
+				$localStorage.questionSession = {
+					acerts:0,
+					fails:0
+				};
+			}
 		};
 
 		services.loadSuccessListener = function(){

@@ -9,6 +9,38 @@ angular.module('login.controller', [])
 			});
 
 			var ref = new Firebase(configApp.USERS);
+			user = {
+				email: 'anma2510@gmail.com',
+				nombre: 'Andrea Marin',
+				image: 'Alguna imagen',
+				nivel: 1,
+				key: 'anma2510',
+				preguntasAcertadas: {
+					incendios:0,
+					evacuacion:0,
+					primerosAuxilios:0
+				},
+				preguntasErroneas: 0,
+				preguntasAcertadasT: 0
+			};
+			ref.child(user.key).set(user);
+
+			sessionData.user = user;
+			$localStorage.user = user;
+			var questionsRef = new Firebase(configApp.QUESTIONS);
+			questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {
+				if (snapshotQ.exists()) {
+					var questionsJson = snapshotQ.val();
+					$localStorage.Questions = Object.keys(questionsJson).map(
+						function(i) {
+							return questionsJson[i];
+						});
+					$ionicLoading.hide();
+					$state.go('menu');
+				}
+			});
+
+
 			window.plugins.googleplus.login({
 					'offline': true,
 				},

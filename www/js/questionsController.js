@@ -5,13 +5,19 @@ angular.module('questions.controllers', [])
 		$scope.data = {};
 		$scope.typeQuestion = "incendios";
 		$rootScope.totalQuestios = sessionData.user.preguntasAcertadasT;
-		$rootScope.answered = {
-			acerts:0,
-			fails:0
-		};
-		var questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
+		$rootScope.answered = $localStorage.questionSession;
+		var questionsLevel;
 		var timerOut;
 		var secondsTimer;
+
+
+		if($localStorage.questionsLevel === undefined){
+			questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
+			$localStorage.questionsLevel = questionsLevel;
+		}
+		else{
+			questionsLevel = $localStorage.questionsLevel;
+		}
 
 		var loadQuestion = function() {
 			var questionRandom = parseInt(Math.random() * questionsLevel.length);
@@ -28,6 +34,11 @@ angular.module('questions.controllers', [])
 			}
 			startTimer();
 			startTimeOutCheck();
+
+			if(Object.keys(questionsLevel).length === 0){
+				questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
+				$localStorage.questionsLevel = questionsLevel;
+			}
 		};
 
 		var saveUser = function(){
@@ -52,10 +63,12 @@ angular.module('questions.controllers', [])
 							return questionsJson[i];
 						});
 					questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
-					$rootScope.answered = {
+					$localStorage.questionsLevel = questionsLevel;
+					$localStorage.questionSession = {
 						acerts:0,
 						fails:0
 					};
+					$rootScope.answered = $localStorage.questionSession;
 				}
 			});
 		};
@@ -86,9 +99,7 @@ angular.module('questions.controllers', [])
 				setTimeout(function() {
 					setHeightBlockScreen(0);
 					$rootScope.answered.fails = $rootScope.answered.fails + 1;
-					if(questionsLevel.length === 0){
-						questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
-					}
+					jQuery('.barAnswer').css('width', (($rootScope.answered.acerts/6)*100) +'%');
 					$state.go('completeQuestion',{
 						'navDirection':'forward'
 					});
@@ -115,12 +126,9 @@ angular.module('questions.controllers', [])
 			var failQuestion = function(){
 				sessionData.user.preguntasErroneas = sessionData.user.preguntasErroneas + 1;
 				saveUser();
-
 				$rootScope.answered.fails = $rootScope.answered.fails + 1;
 				efectAnsweredQuestion(false, id);
-				if(questionsLevel.length === 0){
-					questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
-				}
+				jQuery('.barAnswer').css('width', (($rootScope.answered.acerts/6)*100) +'%');
 			};
 
 			if (answer === $scope.data.opcionCorrecta) {
