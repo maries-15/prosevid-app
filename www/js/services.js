@@ -2,8 +2,32 @@ var firebaseRef = 'https://prosevid-app.firebaseio.com/';
 var applicationConfig = {
 	REF: firebaseRef,
 	USERS: firebaseRef + '/users',
-	QUESTIONS: firebaseRef + '/questions'
+	QUESTIONS: firebaseRef + '/questions',
+	TROPHIES:firebaseRef + '/trophies'
 }
+
+var preguntasAcertadas = {
+	incendios:0,
+	evacuacion:0,
+	primerosAuxilios:0
+};
+var trophies = {
+	bombero:{
+		state:false
+	},
+	enfermero: {
+		state:false
+	}
+};
+var descriptionTrophies = {
+	bombero:{
+		description:"Responde correctamente 10 preguntas de incendios."
+	},
+	enfermero:{
+		description:"Responde correctamente 20 preguntas de primeros auxilios."
+	}
+};
+
 
 angular.module('services.questions', [])
 	.constant('configApp', applicationConfig)
@@ -23,7 +47,7 @@ angular.module('services.questions', [])
 		services.loadDataUser = function(){
 			if($localStorage.user){
 				sessionData.user = $localStorage.user;
-				$location.path('/menu');
+				//$location.path('/menu');
 			}
 			if($localStorage.questionSession === undefined){
 				$localStorage.questionSession = {

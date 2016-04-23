@@ -9,21 +9,21 @@ angular.module('login.controller', [])
 			});
 
 			var ref = new Firebase(configApp.USERS);
+			var refTrophies = new Firebase(configApp.TROPHIES);
+			
 			user = {
 				email: 'anma2510@gmail.com',
 				nombre: 'Andrea Marin',
 				image: 'Alguna imagen',
 				nivel: 1,
 				key: 'anma2510',
-				preguntasAcertadas: {
-					incendios:0,
-					evacuacion:0,
-					primerosAuxilios:0
-				},
 				preguntasErroneas: 0,
-				preguntasAcertadasT: 0
+				preguntasAcertadasT: 0,
+				preguntasAcertadas: preguntasAcertadas,
+				trophies:trophies
 			};
 			ref.child(user.key).set(user);
+			refTrophies.child(user.key).set(trophies);
 
 			sessionData.user = user;
 			$localStorage.user = user;
@@ -39,7 +39,6 @@ angular.module('login.controller', [])
 					$state.go('menu');
 				}
 			});
-
 
 			window.plugins.googleplus.login({
 					'offline': true,
@@ -70,6 +69,7 @@ angular.module('login.controller', [])
 								preguntasAcertadasT: 0
 							};
 							ref.child(user.key).set(user);
+							refTrophies.child(user.key).set(trophies);
 						}
 
 						sessionData.user = user;

@@ -1,44 +1,19 @@
 <ion-view>
-	<div class="list">
-		<label class="item item-input">
-			<textarea placeholder="Pregunta" data-ng-model="data.pregunta"></textarea>
-		</label>
-		<label class="item item-input">
-			<input type="text" placeholder="Opcion 1" data-ng-model="data.opciones.opcion1">
-		</label>
-		<label class="item item-input">
-			<input type="text" placeholder="Opcion 2" data-ng-model="data.opciones.opcion2">
-		</label>
-		<label class="item item-input">
-			<input type="text" placeholder="Opcion 3" data-ng-model="data.opciones.opcion3">
-		</label>
-		<label class="item item-input">
-			<input type="text" placeholder="Opcion Correcta" data-ng-model="data.opcionCorrecta">
-		</label>
-		<label class="item item-input">
-			<input type="text" placeholder="Image [Opcional]" data-ng-model="data.image">
-		</label>
-		<label class="item item-input item-select">
-		    <div class="input-label">
-		    	Nivel
-		    </div>
-		    <select data-ng-model="metadata.nivel">
-		    	<option selected>1</option>
-		      	<option ng-repeat = "i in list">{{i}}</option>
-		    </select>
-		</label>
-		<!-- <label class="item item-input item-select">
-		    <div class="input-label">
-		    	Tipo
-		    </div>
-		    <select data-ng-model="data.tipo">
-		    	<option selected>Evacuación</option>
-		    	<option>Incendios</option>
-		    	<option>Primeros auxilios</option>
-		    </select>
-		</label> -->
-	</div>
-	<button class="button button-block button-positive" data-ng-click="saveQuestion()">
-		Guardar
-	</button>
+	<ion-header-bar class="bar-royal">
+		<h1 class="title">Trophies</h1>
+	</ion-header-bar>
+  	<ion-content>
+  		<div ng-if="trophies !== undefined">
+  			<ion-item ng-repeat="(key,val) in trophies">
+	    		<img src="img/thropies/{{key}}.png" class = "image-trophy trophy-{{val.state}}">
+		    	<label>{{key}}</label>
+		    	<div>
+		    		<label>{{val.description}}</label>
+		    	</div>
+		    </ion-item>
+  		</div>
+	    <div ng-if="trophies === undefined">
+	    	Cargando
+	    </div>
+  	</ion-content>
 </ion-view>

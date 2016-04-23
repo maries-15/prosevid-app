@@ -94,28 +94,6 @@ angular.module('starter.controllers', [])
 			};
 			$scope.usersRanking.push(user);
 		}
-	}])
-	.controller('trophiesCtrl', ['$ionicLoading', '$scope', 'configApp', function($ionicLoading, $scope, configApp) {
-		$scope.list = [];
-		$scope.data = {
-			opciones:{}
-		};
-		$scope.metadata = {};
-		for (var i = 2; i <= 20; i++) {
-			$scope.list.push(i);
-		}
-
-		$scope.saveQuestion = function(){
-			var ref = new Firebase(configApp.QUESTIONS).child('nivel'+$scope.metadata.nivel);
-			$scope.data.tipo = 'incendios';
-    		ref.push($scope.data);
-    		$ionicLoading.show({
-		    	template: 'Se guardo exitosamente',
-		    	duration: 750
-		    });
-		    $scope.data = {};
-		    $scope.metadata = {};
-		};
 	}]);
 
 
@@ -130,21 +108,21 @@ angular.module('login.controller', [])
 			});
 
 			var ref = new Firebase(configApp.USERS);
+			var refTrophies = new Firebase(configApp.TROPHIES);
+			
 			user = {
 				email: 'anma2510@gmail.com',
 				nombre: 'Andrea Marin',
 				image: 'Alguna imagen',
 				nivel: 1,
 				key: 'anma2510',
-				preguntasAcertadas: {
-					incendios:0,
-					evacuacion:0,
-					primerosAuxilios:0
-				},
 				preguntasErroneas: 0,
-				preguntasAcertadasT: 0
+				preguntasAcertadasT: 0,
+				preguntasAcertadas: preguntasAcertadas,
+				trophies:trophies
 			};
 			ref.child(user.key).set(user);
+			refTrophies.child(user.key).set(trophies);
 
 			sessionData.user = user;
 			$localStorage.user = user;
@@ -160,7 +138,6 @@ angular.module('login.controller', [])
 					$state.go('menu');
 				}
 			});
-
 
 			window.plugins.googleplus.login({
 					'offline': true,
@@ -191,6 +168,7 @@ angular.module('login.controller', [])
 								preguntasAcertadasT: 0
 							};
 							ref.child(user.key).set(user);
+							refTrophies.child(user.key).set(trophies);
 						}
 
 						sessionData.user = user;
@@ -380,8 +358,32 @@ var firebaseRef = 'https://prosevid-app.firebaseio.com/';
 var applicationConfig = {
 	REF: firebaseRef,
 	USERS: firebaseRef + '/users',
-	QUESTIONS: firebaseRef + '/questions'
+	QUESTIONS: firebaseRef + '/questions',
+	TROPHIES:firebaseRef + '/trophies'
 }
+
+var preguntasAcertadas = {
+	incendios:0,
+	evacuacion:0,
+	primerosAuxilios:0
+};
+var trophies = {
+	bombero:{
+		state:false
+	},
+	enfermero: {
+		state:false
+	}
+};
+var descriptionTrophies = {
+	bombero:{
+		description:"Responde correctamente 10 preguntas de incendios."
+	},
+	enfermero:{
+		description:"Responde correctamente 20 preguntas de primeros auxilios."
+	}
+};
+
 
 angular.module('services.questions', [])
 	.constant('configApp', applicationConfig)
@@ -401,7 +403,7 @@ angular.module('services.questions', [])
 		services.loadDataUser = function(){
 			if($localStorage.user){
 				sessionData.user = $localStorage.user;
-				$location.path('/menu');
+				//$location.path('/menu');
 			}
 			if($localStorage.questionSession === undefined){
 				$localStorage.questionSession = {
@@ -508,3 +510,21 @@ function efectAnsweredQuestion(correct, id){
 function setHeightBlockScreen(height){
     jQuery('#blockScreen').css('height',height);
 }
+
+angular.module('starter.controllers')
+.controller('trophiesCtrl', ['$ionicLoading', '$scope', '$rootScope', '$timeout', 'configApp', 'sessionData', function($ionicLoading, $scope, $rootScope, $timeout, configApp, sessionData) {
+        
+        $rootScope.reloadTrophies = function(){
+           var ref = new Firebase(configApp.TROPHIES);
+            ref.child(sessionData.user.key).once('value', function(snapshot){
+                if(snapshot.val()){
+                    $timeout(function(){
+                        $scope.trophies = {};
+                        $.extend(true, $scope.trophies, snapshot.val(), descriptionTrophies);
+                        console.log($scope.trophies);
+                    });
+                }
+            });
+        };
+        $rootScope.reloadTrophies();
+    }]);

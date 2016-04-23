@@ -227,3 +227,14 @@
     padding: 67px 52px;
     font-size: 23px;
     text-align: center; }
+
+.image-trophy {
+  height: 64px;
+  width: 64px; }
+
+.trophy-true {
+  opacity: 1; }
+
+.trophy-false {
+  background: gray;
+  opacity: 0.6; }
