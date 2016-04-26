@@ -1,10 +1,14 @@
+ .allBarAnswer{
+	height: 19px;
+	border-radius: 10px;
+	position: relative;
+}  
+
  .barQuestion{
-  position: relative;
- 	height: 19px;
+ 	@extend .allBarAnswer;
  	width: 80%;
     background: rgba(216, 216, 216, 0.59);
     margin: 28px 10%;
-    border-radius: 10px;
 
     .infoAnswerQuestion{
     	@extend .fontsButton;
@@ -16,18 +20,14 @@
 }   
 
 .barAnswer{
-	height: 19px;
-  width: 0;
-  background: rgb(34, 243, 8);
-  border-radius: 10px;
-  position: relative;
+	@extend .allBarAnswer;
+	background: $colorBarAnswer;
+  	width: 0;
 }
 .barAnswerPass{
-  height: 19px;
-  width: 100%;
-  background: rgb(34, 243, 8);
-  border-radius: 10px;
-  position: relative;
+	@extend .allBarAnswer;
+	background: $colorBarAnswer;
+	width: 100%;
 }
 
 .cruz{

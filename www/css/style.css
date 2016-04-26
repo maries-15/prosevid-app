@@ -141,6 +141,24 @@
       padding: 16px 16px;
       font-size: 17px; }
 
+.passLevelMargin {
+  margin: 0% 25% !important; }
+
+.text, .infoLevel .largeText, .infoLevel .numberLevel, .infoLevel .smallText {
+  letter-spacing: 1.2px;
+  font-family: "Roboto-Black";
+  color: #1B1B1B; }
+
+.infoLevel {
+  text-align: center;
+  text-shadow: 0px 0px 25px #fff; }
+  .infoLevel .largeText {
+    font-size: 25px; }
+  .infoLevel .numberLevel {
+    font-size: 45px; }
+  .infoLevel .smallText {
+    font-size: 19px; }
+
 .timer {
   position: relative;
   font-size: 55px;
@@ -189,13 +207,15 @@
   width: 1em;
   height: 1em; }
 
-.barQuestion {
-  position: relative;
+.allBarAnswer, .barQuestion, .barAnswer, .barAnswerPass {
   height: 19px;
+  border-radius: 10px;
+  position: relative; }
+
+.barQuestion {
   width: 80%;
   background: rgba(216, 216, 216, 0.59);
-  margin: 28px 10%;
-  border-radius: 10px; }
+  margin: 28px 10%; }
   .barQuestion .infoAnswerQuestion {
     position: absolute;
     top: 0;
@@ -203,18 +223,12 @@
     color: #194F50; }
 
 .barAnswer {
-  height: 19px;
-  width: 0;
   background: #22f308;
-  border-radius: 10px;
-  position: relative; }
+  width: 0; }
 
 .barAnswerPass {
-  height: 19px;
-  width: 100%;
   background: #22f308;
-  border-radius: 10px;
-  position: relative; }
+  width: 100%; }
 
 .cruz {
   background-image: url("../img/background/cruz.png");
@@ -238,3 +252,21 @@
 .trophy-false {
   background: gray;
   opacity: 0.6; }
+
+.passLevelMargin {
+  margin: 0% 25% !important; }
+
+.text, .infoLevel .largeText, .infoLevel .numberLevel, .infoLevel .smallText {
+  letter-spacing: 1.2px;
+  font-family: "Roboto-Black";
+  color: #1B1B1B; }
+
+.infoLevel {
+  text-align: center;
+  text-shadow: 0px 0px 25px #fff; }
+  .infoLevel .largeText {
+    font-size: 25px; }
+  .infoLevel .numberLevel {
+    font-size: 45px; }
+  .infoLevel .smallText {
+    font-size: 19px; }

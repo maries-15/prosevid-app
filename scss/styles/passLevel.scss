@@ -1,0 +1,26 @@
+.passLevelMargin{
+	margin: 0% 25% !important;
+}
+.text{
+	letter-spacing: 1.2px;
+	font-family: "Roboto-Black";
+	color: #1B1B1B;
+}
+
+.infoLevel{
+	text-align: center;
+	text-shadow: 0px 0px 25px #fff;
+	
+	.largeText{
+		@extend .text;
+		font-size: 25px;
+	}
+	.numberLevel{
+		@extend .text;
+		font-size: 45px;
+	}
+	.smallText{
+		@extend .text;
+		font-size: 19px;
+	}
+}
