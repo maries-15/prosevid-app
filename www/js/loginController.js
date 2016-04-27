@@ -47,6 +47,7 @@ angular.module('login.controller', [])
 					console.log(JSON.stringify(obj));
 					//verificar, si el usuario esta creado, de ser asi traerlo de la BD, de lo contrario guardar
 					var key = obj.email.match(/^([^@]*)@/)[1];
+					key = key.replace(/[.,#$]/g, '');
 					var user;
 					ref.child(key).once('value', function(snapshot) {
 

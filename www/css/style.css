@@ -19,7 +19,7 @@
   position: absolute;
   z-index: 3; }
 
-.fontsButton, .body .button-assertive, .body .button-royal, .barQuestion .infoAnswerQuestion, .cruz .infoCruces {
+.fontsButton, .body .button-assertive, .body .score .numberCruz .numberQuestionMenu, .body .score .numberLevel, .body .button-royal, .barQuestion .infoAnswerQuestion, .cruz .infoCruces {
   font-family: "Roboto-Black";
   font-size: 19px;
   letter-spacing: 1.2px; }
@@ -40,10 +40,44 @@
     .body .shields img {
       width: 31%; }
 
+.labelHeader, .body .score .numberCruz, .body .score .numberLevel {
+  background: #6DBDBE;
+  border-radius: 4px;
+  box-shadow: 0px 0px 1px 0px #194F50;
+  margin: 7px; }
+
+.labelText, .body .score .numberCruz .numberQuestionMenu, .body .score .numberLevel {
+  text-shadow: 0px 0px 5px #194F50;
+  color: #FEFEFE; }
+
 .body {
   position: absolute;
   background-image: url("../img/background/esteFondo.jpg");
   background-size: cover; }
+  .body .score {
+    background: #194F50;
+    height: 42px;
+    -webkit-box-shadow: -1px -1px 12px 1px #194F50;
+    -moz-box-shadow: -1px -1px 12px 1px #194F50;
+    box-shadow: -1px -1px 12px 1px #194F50; }
+    .body .score .numberCruz {
+      float: right;
+      padding: 5px 3px 1px 0px; }
+      .body .score .numberCruz img {
+        width: 20px;
+        margin: -3px 4px; }
+    .body .score .numberLevel {
+      float: left;
+      padding: 3px 5px 2px 5px;
+      height: 28px;
+      width: 81px; }
+      .body .score .numberLevel .textLevel {
+        font-size: 15px !important;
+        position: absolute;
+        padding-top: 1px; }
+      .body .score .numberLevel .numberLevelMenu {
+        position: absolute;
+        padding: 2px 0px 0px 58px; }
   .body .image-fight {
     text-align: center;
     position: relative;
