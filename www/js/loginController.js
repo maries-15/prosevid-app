@@ -11,6 +11,8 @@ angular.module('login.controller', [])
 			var ref = new Firebase(configApp.USERS);
 			var refTrophies = new Firebase(configApp.TROPHIES);
 			
+
+			//eliminar desde aqui			
 			user = {
 				email: 'anma2510@gmail.com',
 				nombre: 'Andrea Marin',
@@ -39,7 +41,9 @@ angular.module('login.controller', [])
 					$state.go('menu');
 				}
 			});
+			//hasta aqui
 
+			
 			window.plugins.googleplus.login({
 					'offline': true,
 				},
@@ -74,6 +78,7 @@ angular.module('login.controller', [])
 						}
 
 						sessionData.user = user;
+						$rootScope.user = sessionData.user;
 						$localStorage.user = user;
 						var questionsRef = new Firebase(configApp.QUESTIONS);
 						questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {

@@ -84,19 +84,7 @@ angular.module('starter', [
 angular.module('starter.controllers', [])
 	.controller('completeQuestionCtrl',['$rootScope', function($rootScope){
 		jQuery('.barAnswer').css('width', (($rootScope.answered.acerts/6)*100) +'%');
-	}])
-	.controller('rankingCtrl', ['$scope', function($scope) {
-		$scope.usersRanking = [];
-		for (var i = 0; i < 8; i++) {
-			var user = {
-				'name': 'user-' + i,
-				'id': i
-			};
-			$scope.usersRanking.push(user);
-		}
 	}]);
-
-
 angular.module('login.controller', [])
 	.controller('loginCtrl', ['$ionicLoading', '$localStorage', '$scope', '$state', 'configApp', 'sessionData', function($ionicLoading, $localStorage, $scope, $state, configApp, sessionData) {
 
@@ -110,6 +98,8 @@ angular.module('login.controller', [])
 			var ref = new Firebase(configApp.USERS);
 			var refTrophies = new Firebase(configApp.TROPHIES);
 			
+
+			//eliminar desde aqui			
 			user = {
 				email: 'anma2510@gmail.com',
 				nombre: 'Andrea Marin',
@@ -138,7 +128,9 @@ angular.module('login.controller', [])
 					$state.go('menu');
 				}
 			});
+			//hasta aqui
 
+			
 			window.plugins.googleplus.login({
 					'offline': true,
 				},
@@ -173,6 +165,7 @@ angular.module('login.controller', [])
 						}
 
 						sessionData.user = user;
+						$rootScope.user = sessionData.user;
 						$localStorage.user = user;
 						var questionsRef = new Firebase(configApp.QUESTIONS);
 						questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {
@@ -201,7 +194,6 @@ angular.module('questions.controllers', [])
 
 		$scope.data = {};
 		$scope.typeQuestion = "incendios";
-		$rootScope.totalQuestios = sessionData.user.preguntasAcertadasT;
 		$rootScope.answered = $localStorage.questionSession;
 		var questionsLevel;
 		var timerOut;
@@ -239,7 +231,6 @@ angular.module('questions.controllers', [])
 		};
 
 		var saveUser = function(){
-			$rootScope.totalQuestios = sessionData.user.preguntasAcertadasT;
 			var ref = new Firebase(configApp.USERS + "/"+ sessionData.user.key);
 			ref.update(sessionData.user);
 			$localStorage.user = sessionData.user;
@@ -355,6 +346,51 @@ angular.module('questions.controllers', [])
 		loadQuestion();
 	}]);
 
+angular.module('starter.controllers')
+.controller('rankingCtrl', ['$firebaseArray', '$scope', '$rootScope', 'configApp', 'sessionData', function($firebaseArray, $scope, $rootScope, configApp, sessionData) {
+        $scope.usersRanking = {};
+
+        $rootScope.reloadRanking = function(){
+            var list = $firebaseArray(new Firebase(configApp.USERS));
+            list.$loaded(function(){
+                var orderList = list.sort(sortUserRanking);
+                $scope.currentUser = sessionData.user;
+                $scope.currentUser.position = orderList.findIndex(findUser);
+                $scope.usersRanking = orderList.splice(0, 5);
+                orderList.$destroy();
+                orderList = null;
+            });
+        };
+
+        var sortUserRanking = function(a, b) {
+            var compareCorrect = a.preguntasAcertadasT - b.preguntasAcertadasT;
+            var compareIncorrect = a.preguntasErroneas - b.preguntasErroneas;
+
+            if (compareCorrect > 0) {
+                return -1;
+            }
+            else if (compareCorrect < 0) {
+                return 1;
+            }
+            else {
+                if(compareIncorrect > 0){
+                    return 1;
+                }
+                else if(compareIncorrect < 0){
+                    return -1;
+                }
+                else{
+                    return 0;
+                }
+            }
+        };
+
+        var findUser = function(element){
+            return element.key == sessionData.user.key;
+        };
+
+        $rootScope.reloadRanking();
+    }]);
 var firebaseRef = 'https://prosevid-app.firebaseio.com/';
 var applicationConfig = {
 	REF: firebaseRef,
@@ -404,7 +440,8 @@ angular.module('services.questions', [])
 		services.loadDataUser = function(){
 			if($localStorage.user){
 				sessionData.user = $localStorage.user;
-				//$location.path('/menu');
+				$rootScope.user = sessionData.user;
+				$location.path('/menu');
 			}
 			if($localStorage.questionSession === undefined){
 				$localStorage.questionSession = {

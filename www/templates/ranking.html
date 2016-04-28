@@ -3,8 +3,21 @@
 		<h1 class="title">Ranking</h1>
 	</ion-header-bar>
   	<ion-content>
-	    <ion-item collection-repeat="user in usersRanking">
-	    	{{user.id}}: {{user.name}}
-	    </ion-item>
+	    <div ng-repeat="user in usersRanking">
+            <img src="{{user.image}}">
+            <label>{{user.nombre}}</label>
+            <label>Acertadas: {{user.preguntasAcertadasT}}</label>
+            <label>Erroneas: {{user.preguntasErroneas}}</label>
+            <br>
+	    </div>
+        <br>
+        <br>
+        <br>
+        <div id="user" data-ng-if="currentUser.position > 0">
+            <img src="{{currentUser.image}}">
+            <label>{{currentUser.nombre}}</label>
+            <label>Acertadas: {{currentUser.preguntasAcertadasT}}</label>
+            <label>Erroneas: {{currentUser.preguntasErroneas}}</label>
+        </div>
   	</ion-content>
 </ion-view>

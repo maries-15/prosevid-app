@@ -47,7 +47,8 @@ angular.module('services.questions', [])
 		services.loadDataUser = function(){
 			if($localStorage.user){
 				sessionData.user = $localStorage.user;
-				//$location.path('/menu');
+				$rootScope.user = sessionData.user;
+				$location.path('/menu');
 			}
 			if($localStorage.questionSession === undefined){
 				$localStorage.questionSession = {

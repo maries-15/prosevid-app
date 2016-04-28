@@ -4,7 +4,6 @@ angular.module('questions.controllers', [])
 
 		$scope.data = {};
 		$scope.typeQuestion = "incendios";
-		$rootScope.totalQuestios = sessionData.user.preguntasAcertadasT;
 		$rootScope.answered = $localStorage.questionSession;
 		var questionsLevel;
 		var timerOut;
@@ -42,7 +41,6 @@ angular.module('questions.controllers', [])
 		};
 
 		var saveUser = function(){
-			$rootScope.totalQuestios = sessionData.user.preguntasAcertadasT;
 			var ref = new Firebase(configApp.USERS + "/"+ sessionData.user.key);
 			ref.update(sessionData.user);
 			$localStorage.user = sessionData.user;
