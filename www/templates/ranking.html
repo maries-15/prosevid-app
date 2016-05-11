@@ -3,21 +3,25 @@
 		<h1 class="title">Ranking</h1>
 	</ion-header-bar>
   	<ion-content>
-	    <div ng-repeat="user in usersRanking">
-            <img src="{{user.image}}">
-            <label>{{user.nombre}}</label>
-            <label>Acertadas: {{user.preguntasAcertadasT}}</label>
-            <label>Erroneas: {{user.preguntasErroneas}}</label>
-            <br>
+	    <div ng-repeat="user in usersRanking" class="row item-ranking">
+            <div class = "col col-20">
+            	<img class="image-avatar" src="{{user.image}}">
+            </div>
+            <div class = "col col-80">
+            	<h4 class = "text-item-ranking">{{user.nombre}}</h4>
+            	<h5 class = "text-item-ranking">Acertadas: {{user.preguntasAcertadasT}}</h5>
+            	<h5 class = "text-item-ranking">Erroneas: {{user.preguntasErroneas}}</h5>
+            </div>
 	    </div>
-        <br>
-        <br>
-        <br>
-        <div id="user" data-ng-if="currentUser.position > 0">
-            <img src="{{currentUser.image}}">
-            <label>{{currentUser.nombre}}</label>
-            <label>Acertadas: {{currentUser.preguntasAcertadasT}}</label>
-            <label>Erroneas: {{currentUser.preguntasErroneas}}</label>
+        <div id="user" data-ng-if="currentUser.position > 0" class="row item-ranking item-user-ranking">
+        	<div class = "col col-20">
+        		<img class="image-avatar" src="{{currentUser.image}}">
+            </div>
+            <div class = "col col-80">
+            	<h4 class = "text-item-ranking">{{currentUser.nombre}}</h4>
+            	<h5 class = "text-item-ranking">Acertadas: {{currentUser.preguntasAcertadasT}}</h5>
+            	<h5 class = "text-item-ranking">Erroneas: {{currentUser.preguntasErroneas}}</h5>
+            </div>
         </div>
   	</ion-content>
 </ion-view>

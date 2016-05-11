@@ -77,7 +77,6 @@ angular.module('starter', [
 			});
 
 		// if none of the above states are matched, use this as the fallback
-		console.log('Hi');
 		$urlRouterProvider.otherwise('/login');
 	}]);
 
@@ -86,7 +85,7 @@ angular.module('starter.controllers', [])
 		jQuery('.barAnswer').css('width', (($rootScope.answered.acerts/6)*100) +'%');
 	}]);
 angular.module('login.controller', [])
-	.controller('loginCtrl', ['$ionicLoading', '$localStorage', '$scope', '$state', 'configApp', 'sessionData', function($ionicLoading, $localStorage, $scope, $state, configApp, sessionData) {
+	.controller('loginCtrl', ['$ionicLoading', '$localStorage', '$scope', '$state', '$rootScope', 'configApp', 'sessionData', function($ionicLoading, $localStorage, $scope, $state, $rootScope, configApp, sessionData) {
 
 		$scope.data = {};
 
@@ -97,13 +96,14 @@ angular.module('login.controller', [])
 
 			var ref = new Firebase(configApp.USERS);
 			var refTrophies = new Firebase(configApp.TROPHIES);
-			
 
-			//eliminar desde aqui			
+
+			//eliminar desde aqui
+			/**
 			user = {
 				email: 'anma2510@gmail.com',
 				nombre: 'Andrea Marin',
-				image: 'Alguna imagen',
+				image: 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50',
 				nivel: 1,
 				key: 'anma2510',
 				preguntasErroneas: 0,
@@ -116,6 +116,7 @@ angular.module('login.controller', [])
 
 			sessionData.user = user;
 			$localStorage.user = user;
+			$rootScope.user = sessionData.user;
 			var questionsRef = new Firebase(configApp.QUESTIONS);
 			questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {
 				if (snapshotQ.exists()) {
@@ -127,10 +128,10 @@ angular.module('login.controller', [])
 					$ionicLoading.hide();
 					$state.go('menu');
 				}
-			});
+			});**/
 			//hasta aqui
 
-			
+
 			window.plugins.googleplus.login({
 					'offline': true,
 				},
@@ -441,7 +442,7 @@ angular.module('services.questions', [])
 			if($localStorage.user){
 				sessionData.user = $localStorage.user;
 				$rootScope.user = sessionData.user;
-				$location.path('/menu');
+				//$location.path('/menu');
 			}
 			if($localStorage.questionSession === undefined){
 				$localStorage.questionSession = {
@@ -551,7 +552,7 @@ function setHeightBlockScreen(height){
 
 angular.module('starter.controllers')
 .controller('trophiesCtrl', ['$ionicLoading', '$scope', '$rootScope', '$timeout', 'configApp', 'sessionData', function($ionicLoading, $scope, $rootScope, $timeout, configApp, sessionData) {
-        
+
         $rootScope.reloadTrophies = function(){
            var ref = new Firebase(configApp.TROPHIES);
             ref.child(sessionData.user.key).once('value', function(snapshot){
@@ -559,7 +560,6 @@ angular.module('starter.controllers')
                     $timeout(function(){
                         $scope.trophies = {};
                         $.extend(true, $scope.trophies, snapshot.val(), descriptionTrophies);
-                        console.log($scope.trophies);
                     });
                 }
             });

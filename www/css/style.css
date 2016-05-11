@@ -62,7 +62,8 @@
     box-shadow: -1px -1px 12px 1px #194F50; }
     .body .score .numberCruz {
       float: right;
-      padding: 5px 3px 1px 0px; }
+      padding: 5px 3px 1px 0px;
+      width: 65px; }
       .body .score .numberCruz img {
         width: 20px;
         margin: -3px 4px; }
@@ -304,3 +305,31 @@
     font-size: 45px; }
   .infoLevel .smallText {
     font-size: 19px; }
+
+.image-avatar {
+  border-radius: 100%;
+  margin-top: 7px; }
+
+.label-ranking {
+  display: inline-block; }
+
+.item-ranking {
+  border: 1px solid;
+  border-top: 0px; }
+
+.item-user-ranking {
+  background: #aa1; }
+
+.row {
+  margin: 0;
+  padding: 5px; }
+
+.row + .row {
+  margin: 0;
+  padding: 5px; }
+
+.text-item-ranking {
+  margin: 3px; }
+
+.bar.bar-royal {
+  background-color: #6DBDBF; }

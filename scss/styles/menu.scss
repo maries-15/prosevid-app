@@ -20,10 +20,11 @@
 		background: $colorButtons;
 	    height: 42px;
 	    @include box-shadow(-1px -1px 12px 1px $colorButtons);
-	    
+
 		.numberCruz{
 			float: right;
 		    padding: 5px 3px 1px 0px;
+		    width: 65px;
 			@extend .labelHeader;
 			img{
 				width: 20px;

@@ -1,0 +1,33 @@
+.image-avatar{
+	border-radius: 100%;
+	margin-top: 7px;
+}
+
+.label-ranking{
+	display: inline-block;
+}
+
+.item-ranking{
+	border: 1px solid;
+	border-top: 0px;
+}
+
+.item-user-ranking{
+	background: #aa1;
+}
+
+.row{
+	margin: 0;
+	padding: 5px;
+}
+.row + .row{
+	margin: 0;
+	padding: 5px;
+}
+
+.text-item-ranking{
+	margin: 3px;
+}
+.bar.bar-royal{
+	background-color: #6DBDBF;
+}
