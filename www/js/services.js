@@ -28,7 +28,6 @@ var descriptionTrophies = {
 	}
 };
 
-
 angular.module('services.questions', [])
 	.constant('configApp', applicationConfig)
 	.value('sessionData', {})
@@ -48,7 +47,7 @@ angular.module('services.questions', [])
 			if($localStorage.user){
 				sessionData.user = $localStorage.user;
 				$rootScope.user = sessionData.user;
-				//$location.path('/menu');
+				$location.path('/menu');
 			}
 			if($localStorage.questionSession === undefined){
 				$localStorage.questionSession = {
@@ -86,4 +85,8 @@ angular.module('services.questions', [])
 			}, 101);
 		};
 		return services;
+	}])
+	.factory("Auth", ['$firebaseAuth', 'configApp', function($firebaseAuth, configApp) {
+		var usersRef = new Firebase(configApp.REF);
+		return $firebaseAuth(usersRef);
 	}]);

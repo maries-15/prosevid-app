@@ -1,104 +1,101 @@
 angular.module('login.controller', [])
-	.controller('loginCtrl', ['$ionicLoading', '$localStorage', '$scope', '$state', '$rootScope', 'configApp', 'sessionData', function($ionicLoading, $localStorage, $scope, $state, $rootScope, configApp, sessionData) {
+	.controller('loginCtrl', ['$ionicLoading', '$localStorage', '$scope', '$state', '$rootScope', 'Auth', 'configApp', 'sessionData', function($ionicLoading, $localStorage, $scope, $state, $rootScope, Auth, configApp, sessionData) {
 
-		$scope.data = {};
+			$scope.data = {};
 
-		$scope.registerUser = function() {
-			$ionicLoading.show({
-				template: 'Autenticando...'
-			});
+			var successLogin = function(userData) {
+				var user;
+				var ref = new Firebase(configApp.USERS);
+				var refTrophies = new Firebase(configApp.TROPHIES);
+				ref.child(userData.key).once('value', function(snapshot) {
 
-			var ref = new Firebase(configApp.USERS);
-			var refTrophies = new Firebase(configApp.TROPHIES);
+					if (snapshot.exists()) {
+						user = snapshot.val();
+					} else {
+						user = {
+							email: userData.email,
+							nombre: userData.nombre,
+							image: userData.image,
+							nivel: 1,
+							key: userData.key,
+							preguntasAcertadas: {
+								incendios: 0,
+								evacuacion: 0,
+								primerosAuxilios: 0
+							},
+							preguntasErroneas: 0,
+							preguntasAcertadasT: 0
+						};
+						ref.child(user.key).set(user);
+						refTrophies.child(user.key).set(trophies);
+					}
 
-
-			//eliminar desde aqui
-			/**
-			user = {
-				email: 'anma2510@gmail.com',
-				nombre: 'Andrea Marin',
-				image: 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50',
-				nivel: 1,
-				key: 'anma2510',
-				preguntasErroneas: 0,
-				preguntasAcertadasT: 0,
-				preguntasAcertadas: preguntasAcertadas,
-				trophies:trophies
-			};
-			ref.child(user.key).set(user);
-			refTrophies.child(user.key).set(trophies);
-
-			sessionData.user = user;
-			$localStorage.user = user;
-			$rootScope.user = sessionData.user;
-			var questionsRef = new Firebase(configApp.QUESTIONS);
-			questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {
-				if (snapshotQ.exists()) {
-					var questionsJson = snapshotQ.val();
-					$localStorage.Questions = Object.keys(questionsJson).map(
-						function(i) {
-							return questionsJson[i];
-						});
-					$ionicLoading.hide();
-					$state.go('menu');
-				}
-			});**/
-			//hasta aqui
-
-
-			window.plugins.googleplus.login({
-					'offline': true,
-				},
-				function(obj) {
-					console.log(JSON.stringify(obj));
-					//verificar, si el usuario esta creado, de ser asi traerlo de la BD, de lo contrario guardar
-					var key = obj.email.match(/^([^@]*)@/)[1];
-					key = key.replace(/[.,#$]/g, '');
-					var user;
-					ref.child(key).once('value', function(snapshot) {
-
-						if (snapshot.exists()) {
-							user = snapshot.val();
+					sessionData.user = user;
+					$rootScope.user = sessionData.user;
+					$localStorage.user = user;
+					var questionsRef = new Firebase(configApp.QUESTIONS);
+					questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {
+						if (snapshotQ.exists()) {
+							var questionsJson = snapshotQ.val();
+							$localStorage.Questions = Object.keys(questionsJson).map(
+								function(i) {
+									return questionsJson[i];
+								});
+							$ionicLoading.hide();
+							$state.go('menu');
 						}
-						else {
-							user = {
+					});
+				});
+			};
+
+			$scope.registerUser = function() {
+				$ionicLoading.show({
+					template: 'Autenticando...'
+				});
+
+				try {
+					window.plugins.googleplus.login({
+							'offline': true,
+						},
+						function(obj) {
+							var key = obj.email.match(/^([^@]*)@/)[1];
+							key = key.replace(/[.,#$]/g, '');
+
+							var userData = {
 								email: obj.email,
 								nombre: obj.displayName,
 								image: obj.imageUrl,
-								nivel: 1,
-								key: key,
-								preguntasAcertadas: {
-									incendios:0,
-									evacuacion:0,
-									primerosAuxilios:0
-								},
-								preguntasErroneas: 0,
-								preguntasAcertadasT: 0
+								key: key
 							};
-							ref.child(user.key).set(user);
-							refTrophies.child(user.key).set(trophies);
-						}
 
-						sessionData.user = user;
-						$rootScope.user = sessionData.user;
-						$localStorage.user = user;
-						var questionsRef = new Firebase(configApp.QUESTIONS);
-						questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {
-							if (snapshotQ.exists()) {
-								var questionsJson = snapshotQ.val();
-								$localStorage.Questions = Object.keys(questionsJson).map(
-									function(i) {
-										return questionsJson[i];
-									});
-								$ionicLoading.hide();
-								$state.go('menu');
+							successLogin(userData);
+						},
+						function(msg) {
+							console.log(msg);
+						}
+					);
+				} catch (e) {
+					if (e instanceof TypeError) {
+						Auth.$authWithOAuthPopup('google', {
+							scope: 'email'
+						}).then(function(authData) {
+							if (authData !== null) {
+								var provider = authData.provider;
+								var key = authData[provider].email.match(/^([^@]*)@/)[1];
+								key = key.replace(/[.,#$]/g, '');
+
+								var userData = {
+									email: authData[provider].email,
+									nombre: authData[provider].displayName,
+									image: authData[provider].profileImageURL,
+									key: key
+								};
+								successLogin(userData);
 							}
-						});
-					});
-				},
-				function(msg) {
-					console.log('error: ', msg);
+						})
+					} else {
+						//Mensaje, este dispositivo no es compatible con esta aplicacion
+					}
 				}
-			);
-		};
+			};
 	}]);

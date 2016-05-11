@@ -1,6 +1,6 @@
 angular.module('questions.controllers', [])
-	.controller('questionsCtrl', ['$scope', '$localStorage', '$state', '$rootScope', '$timeout', 'configApp', 'sessionData', 'UtilitiesService',
-		function($scope, $localStorage, $state, $rootScope, $timeout, configApp, sessionData, UtilitiesService) {
+	.controller('questionsCtrl', ['$scope', '$localStorage', '$state', '$rootScope', '$timeout', 'configApp', 'mediaService', 'sessionData', 'UtilitiesService',
+		function($scope, $localStorage, $state, $rootScope, $timeout, configApp, mediaService, sessionData, UtilitiesService) {
 
 		$scope.data = {};
 		$scope.typeQuestion = "incendios";
@@ -72,6 +72,7 @@ angular.module('questions.controllers', [])
 		};
 
 		var startTimeOutCheck = function(){
+			mediaService.playShot(0);
 			var seconds = 20;
 			$scope.seconds = 20;
 			secondsTimer = setInterval(function(){
@@ -91,6 +92,7 @@ angular.module('questions.controllers', [])
 
 			timerOut = setTimeout(function() {
 				setHeightBlockScreen($rootScope.height);
+				mediaService.playShot(2);
 				alert("Mostrar time out");
 				sessionData.user.preguntasErroneas = sessionData.user.preguntasErroneas + 1;
 				saveUser();
@@ -107,6 +109,7 @@ angular.module('questions.controllers', [])
 
 		$scope.validateAnswer = function(answer, id) {
 			stopTimer();
+			mediaService.stopShot();
 			clearTimeout(timerOut);
 			clearInterval(secondsTimer);
 			setHeightBlockScreen($rootScope.height);
@@ -118,6 +121,9 @@ angular.module('questions.controllers', [])
 
 				$rootScope.answered.acerts = $rootScope.answered.acerts + 1;
 				efectAnsweredQuestion(true, id);
+				setTimeout(function() {
+					mediaService.playShot(1);
+				}, 1800);
 				jQuery('.barAnswer').css('width', (($rootScope.answered.acerts/6)*100) +'%');
 			};
 
@@ -126,6 +132,9 @@ angular.module('questions.controllers', [])
 				saveUser();
 				$rootScope.answered.fails = $rootScope.answered.fails + 1;
 				efectAnsweredQuestion(false, id);
+				setTimeout(function() {
+					mediaService.playShot(2);
+				}, 1800);
 				jQuery('.barAnswer').css('width', (($rootScope.answered.acerts/6)*100) +'%');
 			};
 

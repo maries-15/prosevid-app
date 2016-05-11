@@ -33,7 +33,6 @@ angular.module('starter', [
 		UtilitiesService.loadDataUser();
 		UtilitiesService.loadSuccessListener();
 		UtilitiesService.initBackButtonController();
-
 	}])
 	.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
 		$stateProvider
@@ -85,113 +84,146 @@ angular.module('starter.controllers', [])
 		jQuery('.barAnswer').css('width', (($rootScope.answered.acerts/6)*100) +'%');
 	}]);
 angular.module('login.controller', [])
-	.controller('loginCtrl', ['$ionicLoading', '$localStorage', '$scope', '$state', '$rootScope', 'configApp', 'sessionData', function($ionicLoading, $localStorage, $scope, $state, $rootScope, configApp, sessionData) {
+	.controller('loginCtrl', ['$ionicLoading', '$localStorage', '$scope', '$state', '$rootScope', 'Auth', 'configApp', 'sessionData', function($ionicLoading, $localStorage, $scope, $state, $rootScope, Auth, configApp, sessionData) {
 
-		$scope.data = {};
+			$scope.data = {};
 
-		$scope.registerUser = function() {
-			$ionicLoading.show({
-				template: 'Autenticando...'
-			});
+			var successLogin = function(userData) {
+				var user;
+				var ref = new Firebase(configApp.USERS);
+				var refTrophies = new Firebase(configApp.TROPHIES);
+				ref.child(userData.key).once('value', function(snapshot) {
 
-			var ref = new Firebase(configApp.USERS);
-			var refTrophies = new Firebase(configApp.TROPHIES);
+					if (snapshot.exists()) {
+						user = snapshot.val();
+					} else {
+						user = {
+							email: userData.email,
+							nombre: userData.nombre,
+							image: userData.image,
+							nivel: 1,
+							key: userData.key,
+							preguntasAcertadas: {
+								incendios: 0,
+								evacuacion: 0,
+								primerosAuxilios: 0
+							},
+							preguntasErroneas: 0,
+							preguntasAcertadasT: 0
+						};
+						ref.child(user.key).set(user);
+						refTrophies.child(user.key).set(trophies);
+					}
 
-
-			//eliminar desde aqui
-			/**
-			user = {
-				email: 'anma2510@gmail.com',
-				nombre: 'Andrea Marin',
-				image: 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50',
-				nivel: 1,
-				key: 'anma2510',
-				preguntasErroneas: 0,
-				preguntasAcertadasT: 0,
-				preguntasAcertadas: preguntasAcertadas,
-				trophies:trophies
-			};
-			ref.child(user.key).set(user);
-			refTrophies.child(user.key).set(trophies);
-
-			sessionData.user = user;
-			$localStorage.user = user;
-			$rootScope.user = sessionData.user;
-			var questionsRef = new Firebase(configApp.QUESTIONS);
-			questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {
-				if (snapshotQ.exists()) {
-					var questionsJson = snapshotQ.val();
-					$localStorage.Questions = Object.keys(questionsJson).map(
-						function(i) {
-							return questionsJson[i];
-						});
-					$ionicLoading.hide();
-					$state.go('menu');
-				}
-			});**/
-			//hasta aqui
-
-
-			window.plugins.googleplus.login({
-					'offline': true,
-				},
-				function(obj) {
-					console.log(JSON.stringify(obj));
-					//verificar, si el usuario esta creado, de ser asi traerlo de la BD, de lo contrario guardar
-					var key = obj.email.match(/^([^@]*)@/)[1];
-					key = key.replace(/[.,#$]/g, '');
-					var user;
-					ref.child(key).once('value', function(snapshot) {
-
-						if (snapshot.exists()) {
-							user = snapshot.val();
+					sessionData.user = user;
+					$rootScope.user = sessionData.user;
+					$localStorage.user = user;
+					var questionsRef = new Firebase(configApp.QUESTIONS);
+					questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {
+						if (snapshotQ.exists()) {
+							var questionsJson = snapshotQ.val();
+							$localStorage.Questions = Object.keys(questionsJson).map(
+								function(i) {
+									return questionsJson[i];
+								});
+							$ionicLoading.hide();
+							$state.go('menu');
 						}
-						else {
-							user = {
+					});
+				});
+			};
+
+			$scope.registerUser = function() {
+				$ionicLoading.show({
+					template: 'Autenticando...'
+				});
+
+				try {
+					window.plugins.googleplus.login({
+							'offline': true,
+						},
+						function(obj) {
+							var key = obj.email.match(/^([^@]*)@/)[1];
+							key = key.replace(/[.,#$]/g, '');
+
+							var userData = {
 								email: obj.email,
 								nombre: obj.displayName,
 								image: obj.imageUrl,
-								nivel: 1,
-								key: key,
-								preguntasAcertadas: {
-									incendios:0,
-									evacuacion:0,
-									primerosAuxilios:0
-								},
-								preguntasErroneas: 0,
-								preguntasAcertadasT: 0
+								key: key
 							};
-							ref.child(user.key).set(user);
-							refTrophies.child(user.key).set(trophies);
-						}
 
-						sessionData.user = user;
-						$rootScope.user = sessionData.user;
-						$localStorage.user = user;
-						var questionsRef = new Firebase(configApp.QUESTIONS);
-						questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {
-							if (snapshotQ.exists()) {
-								var questionsJson = snapshotQ.val();
-								$localStorage.Questions = Object.keys(questionsJson).map(
-									function(i) {
-										return questionsJson[i];
-									});
-								$ionicLoading.hide();
-								$state.go('menu');
+							successLogin(userData);
+						},
+						function(msg) {
+							console.log(msg);
+						}
+					);
+				} catch (e) {
+					if (e instanceof TypeError) {
+						Auth.$authWithOAuthPopup('google', {
+							scope: 'email'
+						}).then(function(authData) {
+							if (authData !== null) {
+								var provider = authData.provider;
+								var key = authData[provider].email.match(/^([^@]*)@/)[1];
+								key = key.replace(/[.,#$]/g, '');
+
+								var userData = {
+									email: authData[provider].email,
+									nombre: authData[provider].displayName,
+									image: authData[provider].profileImageURL,
+									key: key
+								};
+								successLogin(userData);
 							}
-						});
-					});
-				},
-				function(msg) {
-					console.log('error: ', msg);
+						})
+					} else {
+						//Mensaje, este dispositivo no es compatible con esta aplicacion
+					}
 				}
-			);
+			};
+	}]);
+
+angular.module('starter')
+	.service('mediaService', ['$rootScope', function($rootScope) {
+
+		var services = {};
+
+		var media;
+		var path = '/android_asset/www/sources/';
+		var routes = ['timer.mp3','win.mp3','fail.mp3'];
+
+		services.playShot = function(position) {
+			if(typeof Media !== 'undefined'){
+				media = new Media(path + routes[position], function() {
+					media.release();
+				}, function(error) {
+					console.log('error', media.src, error);
+				});
+				media.play();
+			}
 		};
+
+		services.pauseShot = function() {
+			if(typeof Media !== 'undefined'){
+				media.pause();
+			}
+		};
+
+		services.stopShot = function() {
+			if(typeof Media !== 'undefined'){
+				media.stop();
+				media.release();
+			}
+		};
+
+		return services;
 	}]);
 
 angular.module('questions.controllers', [])
-	.controller('questionsCtrl', ['$scope', '$localStorage', '$state', '$rootScope', '$timeout', 'configApp', 'sessionData', 'UtilitiesService',
-		function($scope, $localStorage, $state, $rootScope, $timeout, configApp, sessionData, UtilitiesService) {
+	.controller('questionsCtrl', ['$scope', '$localStorage', '$state', '$rootScope', '$timeout', 'configApp', 'mediaService', 'sessionData', 'UtilitiesService',
+		function($scope, $localStorage, $state, $rootScope, $timeout, configApp, mediaService, sessionData, UtilitiesService) {
 
 		$scope.data = {};
 		$scope.typeQuestion = "incendios";
@@ -263,6 +295,7 @@ angular.module('questions.controllers', [])
 		};
 
 		var startTimeOutCheck = function(){
+			mediaService.playShot(0);
 			var seconds = 20;
 			$scope.seconds = 20;
 			secondsTimer = setInterval(function(){
@@ -282,6 +315,7 @@ angular.module('questions.controllers', [])
 
 			timerOut = setTimeout(function() {
 				setHeightBlockScreen($rootScope.height);
+				mediaService.playShot(2);
 				alert("Mostrar time out");
 				sessionData.user.preguntasErroneas = sessionData.user.preguntasErroneas + 1;
 				saveUser();
@@ -298,6 +332,7 @@ angular.module('questions.controllers', [])
 
 		$scope.validateAnswer = function(answer, id) {
 			stopTimer();
+			mediaService.stopShot();
 			clearTimeout(timerOut);
 			clearInterval(secondsTimer);
 			setHeightBlockScreen($rootScope.height);
@@ -309,6 +344,9 @@ angular.module('questions.controllers', [])
 
 				$rootScope.answered.acerts = $rootScope.answered.acerts + 1;
 				efectAnsweredQuestion(true, id);
+				setTimeout(function() {
+					mediaService.playShot(1);
+				}, 1800);
 				jQuery('.barAnswer').css('width', (($rootScope.answered.acerts/6)*100) +'%');
 			};
 
@@ -317,6 +355,9 @@ angular.module('questions.controllers', [])
 				saveUser();
 				$rootScope.answered.fails = $rootScope.answered.fails + 1;
 				efectAnsweredQuestion(false, id);
+				setTimeout(function() {
+					mediaService.playShot(2);
+				}, 1800);
 				jQuery('.barAnswer').css('width', (($rootScope.answered.acerts/6)*100) +'%');
 			};
 
@@ -422,7 +463,6 @@ var descriptionTrophies = {
 	}
 };
 
-
 angular.module('services.questions', [])
 	.constant('configApp', applicationConfig)
 	.value('sessionData', {})
@@ -442,7 +482,7 @@ angular.module('services.questions', [])
 			if($localStorage.user){
 				sessionData.user = $localStorage.user;
 				$rootScope.user = sessionData.user;
-				//$location.path('/menu');
+				$location.path('/menu');
 			}
 			if($localStorage.questionSession === undefined){
 				$localStorage.questionSession = {
@@ -480,6 +520,10 @@ angular.module('services.questions', [])
 			}, 101);
 		};
 		return services;
+	}])
+	.factory("Auth", ['$firebaseAuth', 'configApp', function($firebaseAuth, configApp) {
+		var usersRef = new Firebase(configApp.REF);
+		return $firebaseAuth(usersRef);
 	}]);
 
 var timerCurrent;
