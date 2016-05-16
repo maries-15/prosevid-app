@@ -19,7 +19,7 @@
   position: absolute;
   z-index: 3; }
 
-.fontsButton, .body .button-assertive, .body .score .numberCruz .numberQuestionMenu, .body .score .numberLevel, .body .button-royal, .barQuestion .infoAnswerQuestion, .cruz .infoCruces, .text-header, .trophies-tag .trophies-descpt .title-trophies {
+.fontsButton, .body .button-assertive, .body .score .numberCruz .numberQuestionMenu, .body .score .numberLevel, .body .button-royal, .barQuestion .infoAnswerQuestion, .cruz .infoCruces, .text-header, .trophies-tag .trophies-descpt .title-trophies, .load-trophies {
   font-family: "Roboto-Black";
   font-size: 19px;
   letter-spacing: 1.2px; }
@@ -288,7 +288,8 @@
   color: #fff; }
   .text-header .title {
     text-align: center;
-    padding-top: 12px; }
+    padding-top: 12px;
+    margin-right: 23px; }
 
 .trophies-tag {
   border-radius: 6px;
@@ -323,6 +324,11 @@
       font-size: 14px;
       letter-spacing: 0.4px; }
 
+.load-trophies {
+  color: #103333;
+  text-align: center;
+  font-size: 20px !important; }
+
 .passLevelMargin {
   margin: 0% 25% !important; }
 
@@ -344,7 +350,8 @@
 .image-avatar {
   border-radius: 100%;
   margin-top: 7px;
-  width: 80px; }
+  width: 60px;
+  padding-right: 10px; }
 
 .label-ranking {
   display: inline-block; }
@@ -356,13 +363,13 @@
 .item-user-ranking {
   background: #aa1; }
 
-.row {
-  margin: 0;
-  padding: 5px; }
-
-.row + .row {
-  margin: 0;
-  padding: 5px; }
+.row, .row + .row {
+  padding: 5px;
+  margin: 9px;
+  border: none;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.35);
+  width: inherit; }
 
 .text-item-ranking {
   margin: 3px; }

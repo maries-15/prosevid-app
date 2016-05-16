@@ -1,8 +1,15 @@
 <ion-view>
-	<ion-header-bar class="bar-royal">
+	<!-- <ion-header-bar class="bar-royal">
 		<h1 class="title">Ranking</h1>
-	</ion-header-bar>
-  	<ion-content>
+	</ion-header-bar> -->
+
+  	<ion-content class="body body-ranking">
+        <div class="score">
+            <div class="return-menu"><</div>
+            <div class="text-header">
+                <p class="title">Ranking</p>
+            </div>
+        </div>
 	    <div ng-repeat="user in usersRanking" class="row item-ranking">
             <div class = "col col-20">
             	<img class="image-avatar" src="{{user.image}}">
