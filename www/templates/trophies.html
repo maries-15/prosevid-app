@@ -9,10 +9,10 @@
   		<div ng-if="trophies !== undefined">
   			<div class="trophies-tag" ng-repeat="(key,val) in trophies">
   				<div class="trophies-img">				
-		    		<img src="img/thropies/{{key}}.png" class = "image-trophy trophy-{{val.state}}">
+		    		<img src="img/thropies/{{key | keyFilter}}.png" class = "image-trophy trophy-{{val.state}}">
   				</div>
   				<div class="trophies-descpt descpt-{{val.state}}">
-			    	<div class="title-trophies">{{key}}</div>
+			    	<div class="title-trophies">{{key | keyFilter}}</div>
 		    		<div class="descr-trophies">{{val.description}}</div>  					
   				</div>
 		    </div>

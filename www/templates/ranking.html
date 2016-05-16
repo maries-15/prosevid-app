@@ -18,9 +18,10 @@
             	<h4 class = "text-item-ranking">{{user.nombre}}</h4>
             	<h5 class = "text-item-ranking">Acertadas: {{user.preguntasAcertadasT}}</h5>
             	<h5 class = "text-item-ranking">Erroneas: {{user.preguntasErroneas}}</h5>
+                {{$index+1}}
             </div>
 	    </div>
-        <div id="user" data-ng-if="currentUser.position > 0" class="row item-ranking item-user-ranking">
+        <div id="user" data-ng-if="currentUser.position > 5" class="row item-ranking item-user-ranking">
         	<div class = "col col-20">
         		<img class="image-avatar" src="{{currentUser.image}}">
             </div>
@@ -28,6 +29,7 @@
             	<h4 class = "text-item-ranking">{{currentUser.nombre}}</h4>
             	<h5 class = "text-item-ranking">Acertadas: {{currentUser.preguntasAcertadasT}}</h5>
             	<h5 class = "text-item-ranking">Erroneas: {{currentUser.preguntasErroneas}}</h5>
+                {{currentUser.position}} 
             </div>
         </div>
   	</ion-content>
