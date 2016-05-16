@@ -19,7 +19,7 @@
   position: absolute;
   z-index: 3; }
 
-.fontsButton, .body .button-assertive, .body .score .numberCruz .numberQuestionMenu, .body .score .numberLevel, .body .button-royal, .barQuestion .infoAnswerQuestion, .cruz .infoCruces {
+.fontsButton, .body .button-assertive, .body .score .numberCruz .numberQuestionMenu, .body .score .numberLevel, .body .button-royal, .barQuestion .infoAnswerQuestion, .cruz .infoCruces, .text-header, .trophies-tag .trophies-descpt .title-trophies {
   font-family: "Roboto-Black";
   font-size: 19px;
   letter-spacing: 1.2px; }
@@ -277,16 +277,51 @@
     font-size: 23px;
     text-align: center; }
 
-.image-trophy {
-  height: 64px;
-  width: 64px; }
+.return-menu {
+  float: left;
+  padding: 11px 0 0px 15px;
+  color: #fff;
+  font-size: 24px; }
 
-.trophy-true {
-  opacity: 1; }
+.text-header {
+  font-size: 23px !important;
+  color: #fff; }
+  .text-header .title {
+    text-align: center;
+    padding-top: 12px; }
 
-.trophy-false {
-  background: gray;
-  opacity: 0.6; }
+.trophies-tag {
+  border-radius: 6px;
+  background-color: rgba(5, 14, 14, 0.5);
+  margin: 10px;
+  padding: 9px;
+  min-height: 83px; }
+  .trophies-tag .trophies-img {
+    float: left; }
+    .trophies-tag .trophies-img .image-trophy {
+      height: 64px;
+      width: 64px;
+      border-radius: 6px; }
+    .trophies-tag .trophies-img .trophy-true {
+      opacity: 1;
+      background: rgba(255, 255, 255, 0.81); }
+    .trophies-tag .trophies-img .trophy-false {
+      background: rgba(8, 26, 27, 0.45);
+      opacity: 0.4; }
+  .trophies-tag .trophies-descpt {
+    padding: 0 0 0 74px; }
+    .trophies-tag .trophies-descpt.descpt-true {
+      color: #E0E0E0; }
+    .trophies-tag .trophies-descpt.descpt-false {
+      color: rgba(163, 183, 183, 0.66); }
+    .trophies-tag .trophies-descpt .title-trophies {
+      text-transform: capitalize;
+      font-size: 16px;
+      padding-bottom: 6px; }
+    .trophies-tag .trophies-descpt .descr-trophies {
+      font-family: "Roboto regular";
+      font-size: 14px;
+      letter-spacing: 0.4px; }
 
 .passLevelMargin {
   margin: 0% 25% !important; }
@@ -308,7 +343,8 @@
 
 .image-avatar {
   border-radius: 100%;
-  margin-top: 7px; }
+  margin-top: 7px;
+  width: 80px; }
 
 .label-ranking {
   display: inline-block; }

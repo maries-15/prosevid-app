@@ -1,11 +1,62 @@
-.image-trophy{
-    height: 64px;
-    width: 64px;
+.return-menu{
+    float: left;
+    padding: 11px 0 0px 15px;
+    color: #fff;
+    font-size: 24px;
 }
-.trophy-true{
-    opacity: 1;
+.text-header{
+	@extend .fontsButton;
+	font-size: 23px !important;
+    color: #fff;
+	.title{
+		
+		text-align: center;
+		padding-top: 12px;
+	}
 }
-.trophy-false{
-    background: gray;
-    opacity: 0.6;
+
+.trophies-tag{
+    border-radius: 6px;
+    background-color: rgba(5, 14, 14, 0.5);
+    margin: 10px;
+    padding: 9px;
+    min-height: 83px;
+    .trophies-img{
+    	float: left;      
+        .image-trophy{
+            height: 64px;
+            width: 64px;
+            border-radius: 6px;
+        }
+        .trophy-true{
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.81);
+        }
+        .trophy-false{
+            background: rgba(8, 26, 27, 0.45);
+            opacity: 0.4;
+            // background: gray;
+            // opacity: 0.6;
+        }
+    } 
+    .trophies-descpt{
+        padding: 0 0 0 74px;
+        &.descpt-true{
+            color: #E0E0E0;
+        }
+        &.descpt-false{
+            color: rgba(163, 183, 183, 0.66);
+        }
+    	.title-trophies{
+            text-transform: capitalize;
+            @extend .fontsButton;
+            font-size: 16px;
+            padding-bottom: 6px;
+    	}
+        .descr-trophies{
+            font-family: "Roboto regular";
+            font-size: 14px;
+            letter-spacing: 0.4px;
+        }
+    }
 }

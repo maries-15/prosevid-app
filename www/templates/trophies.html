@@ -1,17 +1,33 @@
 <ion-view>
-	<ion-header-bar class="bar-royal">
-		<h1 class="title">Trophies</h1>
-	</ion-header-bar>
-  	<ion-content>
-  		<div ng-if="trophies !== undefined">
-  			<ion-item ng-repeat="(key,val) in trophies">
-	    		<img src="img/thropies/{{key}}.png" class = "image-trophy trophy-{{val.state}}">
-		    	<label>{{key}}</label>
-		    	<div>
-		    		<label>{{val.description}}</label>
-		    	</div>
-		    </ion-item>
+  	<ion-content class="body">
+  		<div class="score">
+  			<div class="return-menu"><</div>
+  			<div class="text-header">
+  				<p class="title">Trofeos</p>
+  			</div>
   		</div>
+  		<div ng-if="trophies !== undefined">
+  			<div class="trophies-tag" ng-repeat="(key,val) in trophies">
+  				<div class="trophies-img">				
+		    		<img src="img/thropies/{{key}}.png" class = "image-trophy trophy-{{val.state}}">
+  				</div>
+  				<div class="trophies-descpt descpt-{{val.state}}">
+			    	<div class="title-trophies">{{key}}</div>
+		    		<div class="descr-trophies">{{val.description}}</div>  					
+  				</div>
+		    </div>
+  		</div>
+  		  		<!-- <div ng-if="trophies !== undefined">
+  		  			<div class="trophies-tag" ng-repeat="(key,val) in trophies">
+  		  				<div class="trophies-img">				
+  				    		<img src="img/thropies/{{key}}.png" class = "image-trophy trophy-true">
+  		  				</div>
+  		  				<div class="trophies-descpt descpt-true">
+  					    	<div class="title-trophies">{{key}}</div>
+  				    		<div class="descr-trophies">{{val.description}}</div>  					
+  		  				</div>
+  				    </div>
+  		  		</div> -->
 	    <div ng-if="trophies === undefined">
 	    	Cargando
 	    </div>
