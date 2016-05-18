@@ -72,10 +72,10 @@ var descriptionTrophies = {
         description:"Responde correctamente 15 preguntas de primeros auxilios."
     },
     h_enfermero:{
-        description:"Responde correctamente 30 preguntas de primeros auxilios."
+        description:"Responde correctamente 25 preguntas de primeros auxilios."
     },
     i_jefe:{
-        description:"Responde correctamente 45 preguntas de primeros auxilios."
+        description:"Responde correctamente 40 preguntas de primeros auxilios."
     },
     j_estudiante:{
         description:"Consigue 50 cruces."

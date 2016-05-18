@@ -163,4 +163,5 @@ angular.module('questions.controllers', [])
 			loadQuestion();
 		};
 		loadQuestion();
+		UtilitiesService.initListenerTrophies();
 	}]);

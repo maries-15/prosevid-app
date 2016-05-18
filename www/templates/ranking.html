@@ -1,8 +1,4 @@
 <ion-view>
-	<!-- <ion-header-bar class="bar-royal">
-		<h1 class="title">Ranking</h1>
-	</ion-header-bar> -->
-
   	<ion-content class="body body-ranking">
         <div class="score">
             <div class="return-menu"><</div>
@@ -10,26 +6,41 @@
                 <p class="title">Ranking</p>
             </div>
         </div>
-	    <div ng-repeat="user in usersRanking" class="row item-ranking">
+	    <div ng-repeat="user in usersRanking" data-ng-if="$index < 3" class="row item-ranking">
             <div class = "col col-20">
-            	<img class="image-avatar" src="{{user.image}}">
+                <span class="position-rank">{{$index+1}}</span>
+            	<img class="image-avatar" src="{{user.image}}">  
             </div>
             <div class = "col col-80">
-            	<h4 class = "text-item-ranking">{{user.nombre}}</h4>
-            	<h5 class = "text-item-ranking">Acertadas: {{user.preguntasAcertadasT}}</h5>
-            	<h5 class = "text-item-ranking">Erroneas: {{user.preguntasErroneas}}</h5>
-                {{$index+1}}
+            	<h4 class = "name-user">{{user.nombre}}</h4>
+                <span class = "ask-true">
+                    <i  class="ion-checkmark-circled"></i> 
+                    <span class = "num-result">{{user.preguntasAcertadasT}}</span>
+                </span>
+                <span class = "ask-false">
+                    <i  class="ion-close-circled"></i> 
+                    <span class = "num-result">{{user.preguntasErroneas}}</span>
+                </span>
             </div>
 	    </div>
-        <div id="user" data-ng-if="currentUser.position > 5" class="row item-ranking item-user-ranking">
-        	<div class = "col col-20">
-        		<img class="image-avatar" src="{{currentUser.image}}">
+        <div id="user" data-ng-if="currentUser.position+1 > 3 " class="divisor">
+        </div >
+
+        <div id="user" data-ng-if="currentUser.position+1 > 3" class="row item-user-ranking item-ranking ">
+            <div class = "col col-20">
+                <span class="position-rank">{{currentUser.position+1}}</span>
+                <img class="image-avatar" src="{{user.image}}">  
             </div>
             <div class = "col col-80">
-            	<h4 class = "text-item-ranking">{{currentUser.nombre}}</h4>
-            	<h5 class = "text-item-ranking">Acertadas: {{currentUser.preguntasAcertadasT}}</h5>
-            	<h5 class = "text-item-ranking">Erroneas: {{currentUser.preguntasErroneas}}</h5>
-                {{currentUser.position}} 
+                <h4 class = "name-user">{{currentUser.nombre}}</h4>
+                <span class = "ask-true">
+                    <i  class="ion-checkmark-circled"></i> 
+                    <span class = "num-result">{{currentUser.preguntasAcertadasT}}</span>
+                </span>
+                <span class = "ask-false">
+                    <i  class="ion-close-circled"></i> 
+                    <span class = "num-result">{{currentUser.preguntasErroneas}}</span>
+                </span>
             </div>
         </div>
   	</ion-content>
