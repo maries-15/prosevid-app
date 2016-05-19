@@ -3,13 +3,16 @@
 	background-size: cover;
 	.character{
 		width: 55%;
-		margin: 13% 25%;
+	    margin: 0 auto;
+	    margin-top: 24%;
+	    position: relative;
+	    top: 15px;
 		img{
 			width: 100%;
 		}
 	}
 	.button-assertive{
-		margin: 18px 40px;
+		margin: 0 40px 18px;
 		@extend .fontsButton;
 	}
 	.shields{

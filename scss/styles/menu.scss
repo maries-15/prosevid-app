@@ -11,54 +11,54 @@
 	color: #FEFEFE;
 }
 
+.score{
+	background: $colorButtons;
+    height: 42px;
+    @include box-shadow(-1px -1px 12px 1px $colorButtons);
+
+	.numberCruz{
+		float: right;
+	    padding: 5px 3px 1px 0px;
+	    width: 65px;
+		@extend .labelHeader;
+		img{
+			width: 20px;
+			margin: -3px 4px;
+		}
+		.numberQuestionMenu{
+			@extend .fontsButton;
+			@extend .labelText;
+		}
+	}
+	.numberLevel{
+		float: left;
+		@extend .fontsButton;
+		@extend .labelHeader;
+	    @extend .labelText;
+	    padding: 3px 5px 2px 5px;
+	    height: 28px;
+	    width: 81px;
+	    .textLevel{
+	    	font-size: 15px !important;
+	    	position: absolute;
+    	    padding-top: 1px;
+	    }
+	    .numberLevelMenu{
+    	    position: absolute;
+			padding: 2px 0px 0px 58px;
+	    }
+	}
+}
+
 .body{
 	position: absolute;
 	background-image: url( "../img/background/esteFondo.jpg");
 	background-size: cover;
 
-	.score{
-		background: $colorButtons;
-	    height: 42px;
-	    @include box-shadow(-1px -1px 12px 1px $colorButtons);
-
-		.numberCruz{
-			float: right;
-		    padding: 5px 3px 1px 0px;
-		    width: 65px;
-			@extend .labelHeader;
-			img{
-				width: 20px;
-				margin: -3px 4px;
-			}
-			.numberQuestionMenu{
-				@extend .fontsButton;
-				@extend .labelText;
-			}
-		}
-		.numberLevel{
-			float: left;
-			@extend .fontsButton;
-			@extend .labelHeader;
-		    @extend .labelText;
-		    padding: 3px 5px 2px 5px;
-		    height: 28px;
-		    width: 81px;
-		    .textLevel{
-		    	font-size: 15px !important;
-		    	position: absolute;
-	    	    padding-top: 1px;
-		    }
-		    .numberLevelMenu{
-	    	    position: absolute;
-    			padding: 2px 0px 0px 58px;
-		    }
-		}
-	}
-
 	.image-fight{
 	  text-align: center;
 	  position: relative;
-	  padding-top: 36%;
+	  padding-top: 20vh;
 	}
 	.button-royal{
 		margin: 18px 40px;

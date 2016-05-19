@@ -1,47 +1,52 @@
 <ion-view>
-  	<ion-content class="body body-ranking">
-        <div class="score">
-            <div class="return-menu"> <i  class="ion-chevron-left"></i> </div>
-            <div class="text-header">
-                <p class="title">Ranking</p>
-            </div>
+    <div class="score">
+        <a href="#/menu" class="return-menu"> <i  class="ion-android-arrow-back"></i> </a>
+        <div class="text-header">
+            <p class="title">Ranking</p>
         </div>
-	    <div ng-repeat="user in usersRanking" data-ng-if="$index < 3" class="row item-ranking">
-            <div class = "col col-20">
-                <span class="position-rank">{{$index+1}}</span>
-            	<img class="image-avatar" src="{{user.image}}">  
+    </div>
+  	<ion-content class="body body-ranking">
+	    <div class="load-trophies" ng-if="usersRanking === undefined">
+            Cargando...
+        </div>
+        <div ng-if="usersRanking !== undefined">
+            <div ng-repeat="user in usersRanking" data-ng-if="$index < 3" class="row item-ranking">
+                <div class = "col col-20">
+                    <span class="position-rank">{{$index+1}}</span>
+                    <img class="image-avatar" src="{{user.image}}">  
+                </div>
+                <div class = "col col-80">
+                    <h4 class = "name-user">{{user.nombre}}</h4>
+                    <span class = "ask-true">
+                        <i  class="ion-checkmark-circled"></i> 
+                        <span class = "num-result">{{user.preguntasAcertadasT}}</span>
+                    </span>
+                    <span class = "ask-false">
+                        <i  class="ion-close-circled"></i> 
+                        <span class = "num-result">{{user.preguntasErroneas}}</span>
+                    </span>
+                </div>
             </div>
-            <div class = "col col-80">
-            	<h4 class = "name-user">{{user.nombre}}</h4>
-                <span class = "ask-true">
-                    <i  class="ion-checkmark-circled"></i> 
-                    <span class = "num-result">{{user.preguntasAcertadasT}}</span>
-                </span>
-                <span class = "ask-false">
-                    <i  class="ion-close-circled"></i> 
-                    <span class = "num-result">{{user.preguntasErroneas}}</span>
-                </span>
-            </div>
-	    </div>
-        <div id="user" data-ng-if="currentUser.position+1 > 3 " class="divisor">
-        </div >
+            <div id="user" data-ng-if="currentUser.position+1 > 3 " class="divisor">
+            </div >
 
-        <div id="user" data-ng-if="currentUser.position+1 > 3" class="row item-user-ranking item-ranking ">
-            <div class = "col col-20">
-                <span class="position-rank">{{currentUser.position+1}}</span>
-                <img class="image-avatar" src="{{user.image}}">  
-            </div>
-            <div class = "col col-80">
-                <h4 class = "name-user">{{currentUser.nombre}}</h4>
-                <span class = "ask-true">
-                    <i  class="ion-checkmark-circled"></i> 
-                    <span class = "num-result">{{currentUser.preguntasAcertadasT}}</span>
-                </span>
-                <span class = "ask-false">
-                    <i  class="ion-close-circled"></i> 
-                    <span class = "num-result">{{currentUser.preguntasErroneas}}</span>
-                </span>
-            </div>
+            <div id="user" data-ng-if="currentUser.position+1 > 3" class="row item-user-ranking item-ranking ">
+                <div class = "col col-20">
+                    <span class="position-rank">{{currentUser.position+1}}</span>
+                    <img class="image-avatar" src="{{user.image}}">  
+                </div>
+                <div class = "col col-80">
+                    <h4 class = "name-user">{{currentUser.nombre}}</h4>
+                    <span class = "ask-true">
+                        <i  class="ion-checkmark-circled"></i> 
+                        <span class = "num-result">{{currentUser.preguntasAcertadasT}}</span>
+                    </span>
+                    <span class = "ask-false">
+                        <i  class="ion-close-circled"></i> 
+                        <span class = "num-result">{{currentUser.preguntasErroneas}}</span>
+                    </span>
+                </div>
+            </div>   
         </div>
   	</ion-content>
 </ion-view>

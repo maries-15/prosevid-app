@@ -3,7 +3,7 @@ angular.module('services.questions', [])
 .value('sessionData', {})
 .service('UtilitiesService',['$ionicHistory', '$ionicPlatform', '$localStorage', '$location', '$state', '$rootScope', '$ionicPopup','configApp', 'sessionData', function($ionicHistory, $ionicPlatform, $localStorage, $location, $state, $rootScope, $ionicPopup, configApp, sessionData) {
 	var services = {};
-	var statesLetButtonBack = ['menuMore', 'ranking', 'trophies'];
+	var statesLetButtonBack = ['ranking', 'trophies'];
 	$rootScope.initListenerTrophies = 0;
 
 	services.createNewArray = function(array){
@@ -32,7 +32,7 @@ angular.module('services.questions', [])
 		
 	   var alertPopup = $ionicPopup.show({
 	     cssClass: 'popupTime',
-	     templateUrl: 'templates/popupTime.html'
+	     template: '<div class="pop-text-time">TIEMPO FUERA</div>'
 	   });
 
 		timerOut = setTimeout(function()  {
@@ -72,95 +72,80 @@ angular.module('services.questions', [])
 			}, 101);
 	};
 
-	services.initListenerTrophies = function(){
+	services.showPopupTrophies = function(type, value, totalQuestions){
+		
+		var showPopupValue = false;
+		var showPopup = function(trophie){
+			showPopupValue = true;
+			$rootScope.go = true;
+			var firebaseRefTrophies = new Firebase(configApp.TROPHIES + "/" +sessionData.user.key + "/" + trophie + "/state");
+			firebaseRefTrophies.set(true);
+			trophie = trophie.substring(2, trophie.length);
+			var popupTrophies = $ionicPopup.show({
+		    	cssClass: 'popupThropies',
+			    template: '<div ><img class="pop-img-thropie" src="img/thropies/' + trophie + '.png"><span class="pop-text-thropie">Te ganaste el trofeo de ' + trophie + '</span></div>'
+		   });
+			timerOut = setTimeout(function()  {
+			    popupTrophies.close();
+			    $rootScope.go = false;
+			    $state.go('completeQuestion',{
+			    	'navDirection':'forward'
+			    });
+			 }, 5000);
+		};
 
-		var verifyTrophie = function(type, value){
-			var showPopup = false;
-			var whichTrophie = "";
-			if($rootScope.initListenerTrophies === 3){
-
-				if(type === 'incendios'){
-					if(value === 8){
-						showPopup = true;
-						whichTrophie = "bomberito";
-						console.log(descriptionTrophies.a_bomberito);
-					}
-					else if(value === 15){
-						showPopup = true;
-						whichTrophie = "bombero";
-						console.log(descriptionTrophies.b_bombero);
-					}
-					else if(value === 25){
-						showPopup = true;
-						whichTrophie = "capitan";
-						console.log(descriptionTrophies.c_capitan);
-					}	
-				}
-				else if(type === 'evacuacion'){
-					if(value === 8){
-						showPopup = true;
-						whichTrophie = "cadete";
-						console.log(descriptionTrophies.d_cadete);
-					}
-					else if(value === 15){
-						showPopup = true;
-						whichTrophie = "rescatista";
-						console.log(descriptionTrophies.e_rescatista);
-					}
-					else if(value === 25){
-						showPopup = true;
-						whichTrophie = "brigadista";
-						console.log(descriptionTrophies.f_brigadista);
-					}
-				}
-				else{
-					if(value === 15){
-						showPopup = true;
-						whichTrophie = "enfermerito";
-						console.log(descriptionTrophies.g_enfermerito);
-					}
-					else if(value === 25){
-						showPopup = true;
-						whichTrophie = "enfermero";
-						console.log(descriptionTrophies.h_enfermero);
-					}
-					else if(value === 40){
-						showPopup = true;
-						whichTrophie = "jefe";
-						console.log(descriptionTrophies.i_jefe);
-					}
-				}
+		var showPopupCross = function(trophie){
+			if(showPopupValue === true){
+				var firebaseRefTrophies = new Firebase(configApp.TROPHIES + "/" +sessionData.user.key + "/" + trophie + "/state");
+				firebaseRefTrophies.set(true);
 			}
 			else {
-				$rootScope.initListenerTrophies+=1;
+				showPopup(trophie);
 			}
-
-			if(showPopup == true){
-				var popupTrophies = $ionicPopup.show({
-			     cssClass: 'popupThropies',
-			     // templateUrl: 'templates/popupTrophies.html'
-			     template: '<div ><img class="pop-img-thropie" src="img/thropies/' + whichTrophie + '.png"><span class="pop-text-thropie">Te ganaste el trofeo de ' + whichTrophie + '</span></div>'
-			   });
-				timerOut = setTimeout(function()  {
-				    popupTrophies.close(); //close the popup after 3 seconds for some reason
-				    // $state.go('completeQuestion',{
-				    // 	'navDirection':'forward'
-				    // });
-				 }, 5000);
-			}
-		
 		};
-		if($rootScope.initListenerTrophies === 0){
-			var firebaseRef = new Firebase(configApp.USERS + "/" +sessionData.user.key);
-			firebaseRef.child('preguntasAcertadas/evacuacion').on('value', function(snapshot) {
-	  			verifyTrophie('evacuacion', snapshot.val());
-			});
-			firebaseRef.child('preguntasAcertadas/incendios').on('value', function(snapshot) {
-	  			verifyTrophie('incendios', snapshot.val());
-			});
-			firebaseRef.child('preguntasAcertadas/primerosAuxilios').on('value', function(snapshot) {
-	  			verifyTrophie('primerosAuxilios', snapshot.val());
-			});
+
+		if(type === 'incendios'){
+			if(value === 8){
+				showPopup('a_bomberito');
+			}
+			else if(value === 15){
+				showPopup('b_bombero');
+			}
+			else if(value === 25){
+				showPopup('c_capitan');
+			}	
+		}
+		else if(type === 'evacuacion'){
+			if(value === 8){
+				showPopup('d_cadete');
+			}
+			else if(value === 15){
+				showPopup('e_rescatista');
+			}
+			else if(value === 25){
+				showPopup('f_brigadista');
+			}
+		}
+		else if(type === 'primerosAuxilios'){
+			if(value === 15){
+				showPopup('g_enfermerito');
+			}
+			else if(value === 25){
+				showPopup('h_enfermero');
+			}
+			else if(value === 40){
+				showPopup('i_jefe');
+			}
+		}
+
+		if(totalQuestions === 50){
+			showPopupCross('j_estudiante');
+		}
+		else if(totalQuestions === 80){
+			showPopupCross('k_maestro');
+		}
+		else if(totalQuestions === 120){
+			showPopupCross('l_experto');
 		}
 	};
 	return services;

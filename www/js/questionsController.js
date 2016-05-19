@@ -121,6 +121,7 @@ angular.module('questions.controllers', [])
 				efectAnsweredQuestion(true, id);
 				setTimeout(function() {
 					mediaService.playShot(1);
+					UtilitiesService.showPopupTrophies($scope.typeQuestion, sessionData.user.preguntasAcertadas[$scope.typeQuestion], sessionData.user.preguntasAcertadasT);
 				}, 1800);
 				jQuery('.barAnswer').css('width', (($rootScope.answered.acerts/6)*100) +'%');
 			};
@@ -151,9 +152,11 @@ angular.module('questions.controllers', [])
 				failQuestion();
 			}
 			setTimeout(function() {
-				$state.go('completeQuestion', {
-					'navDirection':'forward'
-				});
+				if($rootScope.go !== true){
+					$state.go('completeQuestion', {
+						'navDirection':'forward'
+					});
+				}
 			}, 3600);
 		};
 
@@ -161,5 +164,4 @@ angular.module('questions.controllers', [])
 			loadQuestion();
 		};
 		loadQuestion();
-		UtilitiesService.initListenerTrophies();
 	}]);

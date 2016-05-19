@@ -60,10 +60,6 @@ angular.module('starter', [
 				url:'/passLevel',
 				templateUrl: "templates/passLevel.html"
 			})
-			.state('menuMore', {
-				url:'/menuMore',
-				templateUrl: "templates/menuMore.html",
-			})
 			.state('ranking', {
 				url:'/ranking',
 				templateUrl: "templates/ranking.html",

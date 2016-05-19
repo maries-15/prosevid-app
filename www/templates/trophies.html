@@ -1,35 +1,24 @@
 <ion-view>
-  	<ion-content class="body">
-  		<div class="score">
-  			<div class="return-menu"><i  class="ion-chevron-left"></i></div>
-  			<div class="text-header">
-  				<p class="title">Trofeos</p>
-  			</div>
-  		</div>
-  		<div ng-if="trophies !== undefined">
-  			<div class="trophies-tag" ng-repeat="(key,val) in trophies">
-  				<div class="trophies-img">				
-		    		<img src="img/thropies/{{key | keyFilter}}.png" class = "image-trophy trophy-{{val.state}}">
-  				</div>
-  				<div class="trophies-descpt descpt-{{val.state}}">
-			    	<div class="title-trophies">{{key | keyFilter}}</div>
-		    		<div class="descr-trophies">{{val.description}}</div>  					
-  				</div>
-		    </div>
-  		</div>
-  		  		<!-- <div ng-if="trophies !== undefined">
-  		  			<div class="trophies-tag" ng-repeat="(key,val) in trophies">
-  		  				<div class="trophies-img">				
-  				    		<img src="img/thropies/{{key}}.png" class = "image-trophy trophy-true">
-  		  				</div>
-  		  				<div class="trophies-descpt descpt-true">
-  					    	<div class="title-trophies">{{key}}</div>
-  				    		<div class="descr-trophies">{{val.description}}</div>  					
-  		  				</div>
-  				    </div>
-  		  		</div> -->
-	    <div class="load-trophies" ng-if="trophies === undefined">
-	    	Cargando...
-	    </div>
-  	</ion-content>
+	<div class="score">
+	  	<a href="#/menu" class="return-menu"><i  class="ion-android-arrow-back"></i></a>
+	  		<div class="text-header">
+			<p class="title">Trofeos</p>
+	  	</div>
+	</div>
+	<ion-content class="body body-ranking">
+		<div ng-if="trophies !== undefined">
+			<div class="trophies-tag" ng-repeat="(key,val) in trophies">
+				<div class="trophies-img">				
+					<img src="img/thropies/{{key | keyFilter}}.png" class = "image-trophy trophy-{{val.state}}">
+				</div>
+				<div class="trophies-descpt descpt-{{val.state}}">
+					<div class="title-trophies">{{key | keyFilter}}</div>
+					<div class="descr-trophies">{{val.description}}</div>  					
+				</div>
+			</div>
+		</div>
+		<div class="load-trophies" ng-if="trophies === undefined">
+			Cargando...
+		</div>
+	</ion-content>
 </ion-view>
