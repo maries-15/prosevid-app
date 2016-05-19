@@ -93,16 +93,14 @@ angular.module('questions.controllers', [])
 			timerOut = setTimeout(function() {
 				setHeightBlockScreen($rootScope.height);
 				mediaService.playShot(2);
-				alert("Mostrar time out");
+				UtilitiesService.loadPopupTime();
 				sessionData.user.preguntasErroneas = sessionData.user.preguntasErroneas + 1;
 				saveUser();
 				setTimeout(function() {
 					setHeightBlockScreen(0);
 					$rootScope.answered.fails = $rootScope.answered.fails + 1;
 					jQuery('.barAnswer').css('width', (($rootScope.answered.acerts/6)*100) +'%');
-					$state.go('completeQuestion',{
-						'navDirection':'forward'
-					});
+					
 				}, 1500);
 			}, 20000);
 		};
