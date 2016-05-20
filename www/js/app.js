@@ -45,6 +45,7 @@ angular.module('starter', [
 			.state('menu', {
 				url:'/menu',
 				templateUrl: "templates/menu.html",
+				controller: 'menuCtrl'
 			})
 			.state('questions', {
 				url:'/questions',
@@ -69,8 +70,29 @@ angular.module('starter', [
 				url:'/trophies',
 				templateUrl: "templates/trophies.html",
 				controller: 'trophiesCtrl'
+			})
+			.state('about', {
+				url:'/about',
+				templateUrl: "templates/about.html"
+			})
+			.state('winner', {
+				url:'/winner',
+				templateUrl: "templates/winner.html"
 			});
 
 		// if none of the above states are matched, use this as the fallback
 		$urlRouterProvider.otherwise('/login');
+	}])
+	.controller('menuCtrl', ['$scope', '$state', '$rootScope', 'sessionData', function($scope, $state, $rootScope, sessionData){
+		$scope.play = function(){
+			if(sessionData.user.win === false){
+				if(typeof $rootScope.loadNextQuestion !== 'undefined'){
+					$rootScope.loadNextQuestion()
+				}
+				$state.go('questions');
+			}
+			else{
+				$state.go('winner');
+			}
+		};
 	}]);

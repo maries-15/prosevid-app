@@ -6,6 +6,29 @@ angular.module('services.questions', [])
 	var statesLetButtonBack = ['ranking', 'trophies'];
 	$rootScope.initListenerTrophies = 0;
 
+
+	$rootScope.restartUser = function() {
+		sessionData.user.preguntasAcertadas = {
+			incendios: 0,
+			evacuacion: 0,
+			primerosAuxilios: 0
+		};
+
+		sessionData.user.preguntasAcertadasT = 0;
+		sessionData.user.preguntasErroneas = 0;
+		sessionData.user.win = false;
+		sessionData.user.nivel = 1;
+
+		var ref = new Firebase(configApp.USERS + "/"+ sessionData.user.key);
+		ref.update(sessionData.user);
+		$localStorage.user = sessionData.user;
+
+		if(typeof $rootScope.loadNextQuestion !== 'undefined'){
+			$rootScope.loadNextQuestion()
+		}
+		$state.go('questions');
+	};
+
 	services.createNewArray = function(array){
 		var newArray = [];
 		for(var i = 0; i < array.length; i++){
@@ -85,13 +108,24 @@ angular.module('services.questions', [])
 		    	cssClass: 'popupThropies',
 			    template: '<div ><img class="pop-img-thropie" src="img/thropies/' + trophie + '.png"><span class="pop-text-thropie">Te ganaste el trofeo de ' + trophie + '</span></div>'
 		   });
-			timerOut = setTimeout(function()  {
-			    popupTrophies.close();
-			    $rootScope.go = false;
-			    $state.go('completeQuestion',{
-			    	'navDirection':'forward'
-			    });
-			 }, 5000);
+			if($rootScope.win !== true){
+				timerOut = setTimeout(function()  {
+				    popupTrophies.close();
+				    $rootScope.go = false;
+				    $state.go('completeQuestion',{
+				    	'navDirection':'forward'
+				    });
+				 }, 5000);
+			}
+			else{
+				timerOut = setTimeout(function()  {
+				    popupTrophies.close();
+				    $rootScope.go = false;
+				    $state.go('winner',{
+				    	'navDirection':'forward'
+				    });
+				 }, 3600);
+			}
 		};
 
 		var showPopupCross = function(trophie){
@@ -145,6 +179,7 @@ angular.module('services.questions', [])
 			showPopupCross('k_maestro');
 		}
 		else if(totalQuestions === 120){
+			$rootScope.win = true;
 			showPopupCross('l_experto');
 		}
 	};

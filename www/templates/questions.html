@@ -1,39 +1,42 @@
 <ion-view>
 	<div id="blockScreen" class="blockScreen"></div>
-	<ion-content class="body {{typeQuestion}} scroll-content ionic-scroll">
-		<div class="border-clock">
-			<div class="inside-circle">
+	<ion-content >
+		<div class="body {{typeQuestion}} bodyQuestions">
+			<div class="border-clock">
+				<div class="inside-circle">
+				</div>
+				<div class="middle-circle"><label class="seconds">{{seconds}}</label></div>
+				<div id="timer" class="timer fill"></div>
 			</div>
-			<div class="middle-circle"><label class="seconds">{{seconds}}</label></div>
-			<div id="timer" class="timer fill"></div>
-		</div>
-		<div class="shield" >
-			<img ng-src='img/logos/logo{{typeQuestion}}2.png'>
-		</div>
-		<div class="band"></div>
-		<div class="card question">
-			<div class="item item-text-wrap item-question">
-				{{data.pregunta}}
+			<div class="shield" >
+				<img ng-src='img/logos/logo{{typeQuestion}}2.png'>
 			</div>
-		</div>
-		<div class="container-image" data-ng-if="data.image !== undefined">
-			<div class="image" style="background-image: url('img/imagesQuestions/{{data.image}}.jpg');"></div>
-		</div>
+			<div class="band"></div>
+			<div class="card question">
+				<div class="item item-text-wrap item-question">
+					{{data.pregunta}}
+				</div>
+			</div>
+			<div class="container-image" data-ng-if="data.image !== undefined">
+				<div class="image" style="background-image: url('img/imagesQuestions/{{data.image}}.jpg');"></div>
+			</div>
 
-		<div class="card all-options">
-			<div id="choice1" class="item item-text-wrap answer" data-ng-click = "validateAnswer(data.opciones.opcion1, 'choice1')">
-				{{data.opciones.opcion1}}
+			<div class="card all-options">
+				<div id="choice1" class="item item-text-wrap answer" data-ng-click = "validateAnswer(data.opciones.opcion1, 'choice1')">
+					{{data.opciones.opcion1}}
+				</div>
+			</div>
+			<div class="card all-options">
+				<div id="choice2" class="item item-text-wrap answer" data-ng-click = "validateAnswer(data.opciones.opcion2 , 'choice2')">
+				{{data.opciones.opcion2}}
+				</div>
+			</div>
+			<div class="card all-options">
+				<div id="choice3" class="item item-text-wrap answer" data-ng-click = "validateAnswer(data.opciones.opcion3, 'choice3')">
+					{{data.opciones.opcion3}}
+				</div>
 			</div>
 		</div>
-		<div class="card all-options">
-			<div id="choice2" class="item item-text-wrap answer" data-ng-click = "validateAnswer(data.opciones.opcion2 , 'choice2')">
-			{{data.opciones.opcion2}}
-			</div>
-		</div>
-		<div class="card all-options">
-			<div id="choice3" class="item item-text-wrap answer" data-ng-click = "validateAnswer(data.opciones.opcion3, 'choice3')">
-				{{data.opciones.opcion3}}
-			</div>
-		</div>
+		
 	</ion-content>
 </ion-view>

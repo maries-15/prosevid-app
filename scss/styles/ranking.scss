@@ -8,14 +8,18 @@
 	font-size: 15px;
 	.ion-checkmark-circled, .ion-close-circled{
 		font-size: 19px;
-		position: absolute;
+		position: relative;
+        top: 2px;
 	}
 	.num-result{
-		margin-left: 26px;
+		margin-left: 6px;
 	}
 }
 .body-ranking{
     top: 42px;
+    .scroll{
+        height: 100%;
+    }
 }
 
 .image-avatar{

@@ -19,7 +19,7 @@
 	.numberCruz{
 		float: right;
 	    padding: 5px 3px 1px 0px;
-	    width: 65px;
+	    min-width: 75px;
 		@extend .labelHeader;
 		img{
 			width: 20px;
@@ -58,7 +58,7 @@
 	.image-fight{
 	  text-align: center;
 	  position: relative;
-	  padding-top: 20vh;
+	  padding-top: 30%;
 	}
 	.button-royal{
 		margin: 18px 40px;

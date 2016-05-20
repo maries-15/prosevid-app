@@ -41,6 +41,9 @@ angular.module('questions.controllers', [])
 		};
 
 		var saveUser = function(){
+			if(sessionData.user.preguntasAcertadasT === 120){
+				sessionData.user.win = true;
+			}
 			var ref = new Firebase(configApp.USERS + "/"+ sessionData.user.key);
 			ref.update(sessionData.user);
 			$localStorage.user = sessionData.user;
@@ -151,6 +154,7 @@ angular.module('questions.controllers', [])
 			} else {
 				failQuestion();
 			}
+
 			setTimeout(function() {
 				if($rootScope.go !== true){
 					$state.go('completeQuestion', {

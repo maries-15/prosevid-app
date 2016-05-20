@@ -45,6 +45,7 @@ angular.module('starter', [
 			.state('menu', {
 				url:'/menu',
 				templateUrl: "templates/menu.html",
+				controller: 'menuCtrl'
 			})
 			.state('questions', {
 				url:'/questions',
@@ -69,10 +70,31 @@ angular.module('starter', [
 				url:'/trophies',
 				templateUrl: "templates/trophies.html",
 				controller: 'trophiesCtrl'
+			})
+			.state('about', {
+				url:'/about',
+				templateUrl: "templates/about.html"
+			})
+			.state('winner', {
+				url:'/winner',
+				templateUrl: "templates/winner.html"
 			});
 
 		// if none of the above states are matched, use this as the fallback
 		$urlRouterProvider.otherwise('/login');
+	}])
+	.controller('menuCtrl', ['$scope', '$state', '$rootScope', 'sessionData', function($scope, $state, $rootScope, sessionData){
+		$scope.play = function(){
+			if(sessionData.user.win === false){
+				if(typeof $rootScope.loadNextQuestion !== 'undefined'){
+					$rootScope.loadNextQuestion()
+				}
+				$state.go('questions');
+			}
+			else{
+				$state.go('winner');
+			}
+		};
 	}]);
 
 angular.module('starter.controllers', [])
@@ -194,7 +216,8 @@ angular.module('login.controller', [])
 								primerosAuxilios: 0
 							},
 							preguntasErroneas: 0,
-							preguntasAcertadasT: 0
+							preguntasAcertadasT: 0,
+							win: false
 						};
 						ref.child(user.key).set(user);
 						refTrophies.child(user.key).set(trophies);
@@ -241,6 +264,7 @@ angular.module('login.controller', [])
 							successLogin(userData);
 						},
 						function(msg) {
+							$ionicLoading.hide();
 							console.log(msg);
 						}
 					);
@@ -349,6 +373,9 @@ angular.module('questions.controllers', [])
 		};
 
 		var saveUser = function(){
+			if(sessionData.user.preguntasAcertadasT === 120){
+				sessionData.user.win = true;
+			}
 			var ref = new Firebase(configApp.USERS + "/"+ sessionData.user.key);
 			ref.update(sessionData.user);
 			$localStorage.user = sessionData.user;
@@ -459,6 +486,7 @@ angular.module('questions.controllers', [])
 			} else {
 				failQuestion();
 			}
+
 			setTimeout(function() {
 				if($rootScope.go !== true){
 					$state.go('completeQuestion', {
@@ -476,7 +504,6 @@ angular.module('questions.controllers', [])
 
 angular.module('starter.controllers')
 .controller('rankingCtrl', ['$firebaseArray', '$scope', '$rootScope', 'configApp', 'sessionData', function($firebaseArray, $scope, $rootScope, configApp, sessionData) {
-        $scope.usersRanking = {};
 
         $rootScope.reloadRanking = function(){
             var list = $firebaseArray(new Firebase(configApp.USERS));
@@ -526,6 +553,29 @@ angular.module('services.questions', [])
 	var services = {};
 	var statesLetButtonBack = ['ranking', 'trophies'];
 	$rootScope.initListenerTrophies = 0;
+
+
+	$rootScope.restartUser = function() {
+		sessionData.user.preguntasAcertadas = {
+			incendios: 0,
+			evacuacion: 0,
+			primerosAuxilios: 0
+		};
+
+		sessionData.user.preguntasAcertadasT = 0;
+		sessionData.user.preguntasErroneas = 0;
+		sessionData.user.win = false;
+		sessionData.user.nivel = 1;
+
+		var ref = new Firebase(configApp.USERS + "/"+ sessionData.user.key);
+		ref.update(sessionData.user);
+		$localStorage.user = sessionData.user;
+
+		if(typeof $rootScope.loadNextQuestion !== 'undefined'){
+			$rootScope.loadNextQuestion()
+		}
+		$state.go('questions');
+	};
 
 	services.createNewArray = function(array){
 		var newArray = [];
@@ -606,13 +656,24 @@ angular.module('services.questions', [])
 		    	cssClass: 'popupThropies',
 			    template: '<div ><img class="pop-img-thropie" src="img/thropies/' + trophie + '.png"><span class="pop-text-thropie">Te ganaste el trofeo de ' + trophie + '</span></div>'
 		   });
-			timerOut = setTimeout(function()  {
-			    popupTrophies.close();
-			    $rootScope.go = false;
-			    $state.go('completeQuestion',{
-			    	'navDirection':'forward'
-			    });
-			 }, 5000);
+			if($rootScope.win !== true){
+				timerOut = setTimeout(function()  {
+				    popupTrophies.close();
+				    $rootScope.go = false;
+				    $state.go('completeQuestion',{
+				    	'navDirection':'forward'
+				    });
+				 }, 5000);
+			}
+			else{
+				timerOut = setTimeout(function()  {
+				    popupTrophies.close();
+				    $rootScope.go = false;
+				    $state.go('winner',{
+				    	'navDirection':'forward'
+				    });
+				 }, 3600);
+			}
 		};
 
 		var showPopupCross = function(trophie){
@@ -666,6 +727,7 @@ angular.module('services.questions', [])
 			showPopupCross('k_maestro');
 		}
 		else if(totalQuestions === 120){
+			$rootScope.win = true;
 			showPopupCross('l_experto');
 		}
 	};

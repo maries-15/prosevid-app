@@ -24,7 +24,8 @@ angular.module('login.controller', [])
 								primerosAuxilios: 0
 							},
 							preguntasErroneas: 0,
-							preguntasAcertadasT: 0
+							preguntasAcertadasT: 0,
+							win: false
 						};
 						ref.child(user.key).set(user);
 						refTrophies.child(user.key).set(trophies);
@@ -71,6 +72,7 @@ angular.module('login.controller', [])
 							successLogin(userData);
 						},
 						function(msg) {
+							$ionicLoading.hide();
 							console.log(msg);
 						}
 					);

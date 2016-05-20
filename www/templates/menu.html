@@ -11,10 +11,10 @@
    			</div>
    		</div>
 	  	<div class="image-fight">
-	  	  <a class="button button-block button-royal" href="#/questions" data-ng-click="$root.loadNextQuestion()">Jugar</a>
+	  	  <a class="button button-block button-royal" data-ng-click="play()">Jugar</a>
         <a class="button button-block button-royal" href="#/trophies" data-ng-click="$root.reloadTrophies()">Trofeos</a>
-        <a class="button button-block button-royal" href="#/ranking">Ranking</a>
-        <a class="button button-block button-royal" href="#/menu">Acerca de</a>
+        <a class="button button-block button-royal" href="#/ranking" data-ng-click="$root.reloadRanking()">Ranking</a>
+        <a class="button button-block button-royal" href="#/about">Acerca de</a>
 	  	</div>
 	</ion-content>
 </ion-view>

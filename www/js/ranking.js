@@ -1,6 +1,5 @@
 angular.module('starter.controllers')
 .controller('rankingCtrl', ['$firebaseArray', '$scope', '$rootScope', 'configApp', 'sessionData', function($firebaseArray, $scope, $rootScope, configApp, sessionData) {
-        $scope.usersRanking = {};
 
         $rootScope.reloadRanking = function(){
             var list = $firebaseArray(new Firebase(configApp.USERS));
