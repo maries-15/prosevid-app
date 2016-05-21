@@ -3,11 +3,14 @@ angular.module('services.questions', [])
 .value('sessionData', {})
 .service('UtilitiesService',['$ionicHistory', '$ionicPlatform', '$localStorage', '$location', '$state', '$rootScope', '$ionicPopup','configApp', 'sessionData', function($ionicHistory, $ionicPlatform, $localStorage, $location, $state, $rootScope, $ionicPopup, configApp, sessionData) {
 	var services = {};
-	var statesLetButtonBack = ['ranking', 'trophies'];
+	var statesLetButtonBack = ['ranking', 'trophies', 'about'];
 	$rootScope.initListenerTrophies = 0;
 
 
 	$rootScope.restartUser = function() {
+		if(typeof window.analytics !== 'undefined'){
+			window.analytics.trackEvent('Click', 'restart', 'Reiniciar datos de usuario');
+		}
 		sessionData.user.preguntasAcertadas = {
 			incendios: 0,
 			evacuacion: 0,
@@ -23,10 +26,26 @@ angular.module('services.questions', [])
 		ref.update(sessionData.user);
 		$localStorage.user = sessionData.user;
 
-		if(typeof $rootScope.loadNextQuestion !== 'undefined'){
-			$rootScope.loadNextQuestion()
+		delete $localStorage.questionsLevel;
+		delete $localStorage.questionsLevel;
+
+		if(typeof $rootScope.restartLevelUser !== 'undefined'){
+			$rootScope.restartLevelUser();
+			$state.go('questions');
 		}
-		$state.go('questions');
+		else{
+			var questionsRef = new Firebase(configApp.QUESTIONS);
+			questionsRef.child('nivel' + sessionData.user.nivel).once('value', function(snapshotQ) {
+				if (snapshotQ.exists()) {
+					var questionsJson = snapshotQ.val();
+					$localStorage.Questions = Object.keys(questionsJson).map(
+						function(i) {
+							return questionsJson[i];
+						});
+					$state.go('questions');
+				}
+			});
+		}
 	};
 
 	services.createNewArray = function(array){
@@ -70,8 +89,14 @@ angular.module('services.questions', [])
 	services.loadSuccessListener = function(){
 		$rootScope.$on("$stateChangeSuccess", function(event, toState, toParams, fromState, fromParams)
 		{
+			if(typeof window.analytics !== 'undefined'){
+				window.analytics.trackView(toState.name);
+			}
 			if ($rootScope.height === undefined) {
 				$rootScope.height = jQuery('ion-nav-view').height();
+			}
+			if ($rootScope.loadComplete !== 1) {
+				$rootScope.loadComplete = 1;
 			}
 		});
 	};
@@ -85,14 +110,13 @@ angular.module('services.questions', [])
 				ionic.Platform.exitApp();
 			} else if ($state.current.name === 'menu') {
 				$rootScope.backButtonPressedOnceToExit = true;
-					//Mensaje presiona de nuevo para salir
-					setTimeout(function() {
-						$rootScope.backButtonPressedOnceToExit = false;
-					}, 2000);
-				}
-				e.preventDefault();
-				return false;
-			}, 101);
+				setTimeout(function() {
+					$rootScope.backButtonPressedOnceToExit = false;
+				}, 3000);
+			}
+			e.preventDefault();
+			return false;
+		}, 101);
 	};
 
 	services.showPopupTrophies = function(type, value, totalQuestions){
@@ -183,6 +207,40 @@ angular.module('services.questions', [])
 			showPopupCross('l_experto');
 		}
 	};
+
+	services.checkNetwork = function() {
+		var isOnline = true;
+
+		var showPopup = function(){
+			$rootScope.alertPopup = $ionicPopup.alert({
+	    		title: 'Oops',
+	    		template: 'Lo sentimos no estas conectado a internet',
+	    		cssClass:'noConnectionPopUp'
+	   		});
+		};
+
+		var hidePopUp = function(){
+			if($rootScope.alertPopup !== undefined){
+				$rootScope.alertPopup.close();
+				$rootScope.alertPopup = undefined;
+			}
+		}
+
+		var callbackFunctionOffline = function(){
+			if(!isOnline) return;
+			isOnline = false;
+			showPopup();
+		};
+
+		var callbackFunctionOnline = function(){
+			if(isOnline) return;
+			isOnline = true;
+			hidePopUp();
+		};
+
+		document.addEventListener("offline", callbackFunctionOffline, false);
+		document.addEventListener("online", callbackFunctionOnline, false);
+	}
 	return services;
 }])
 .factory("Auth", ['$firebaseAuth', 'configApp', function($firebaseAuth, configApp) {

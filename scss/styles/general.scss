@@ -22,11 +22,23 @@
 // about styles
 .cardAbout{
 	width: 90%;
-    height: 90%;
+    min-height: 90%;
     margin: 6% auto;
     padding: 20px;
     color: #FFF;
     background: rgba(0, 0, 0, 0.6);
     border-radius: 6px;
-   	font-size: 18px
+   	font-size: 16px
+}
+
+.textsAbout{
+	text-align: center;
+}
+.logosAbout{
+	width: 100%;
+	border-radius: 10px;
+}
+.contanerIcon{
+	margin: 0 auto;
+	width: 120px;
 }

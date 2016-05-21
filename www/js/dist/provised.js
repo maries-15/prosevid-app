@@ -13,7 +13,7 @@ angular.module('starter', [
 	'services.questions'
 	])
 
-.run(['$ionicPlatform', 'UtilitiesService', function($ionicPlatform, UtilitiesService) {
+.run(['$ionicPlatform', 'UtilitiesService', function($ionicPlatform, UtilitiesService, sessionData) {
 		$ionicPlatform.ready(function() {
 			if (window.cordova && window.cordova.plugins.Keyboard) {
 				// Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -28,11 +28,16 @@ angular.module('starter', [
 			if (window.StatusBar) {
 				StatusBar.styleDefault();
 			}
+			if (typeof window.analytics !== "undefined") {
+				window.analytics.startTrackerWithId('UA-78052996-1');
+				window.analytics.trackEvent('System', 'Launch', 'Inicio de la aplicacion');
+			};
 		});
 
 		UtilitiesService.loadDataUser();
 		UtilitiesService.loadSuccessListener();
 		UtilitiesService.initBackButtonController();
+		UtilitiesService.checkNetwork();
 	}])
 	.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
 		$stateProvider
@@ -196,6 +201,10 @@ angular.module('login.controller', [])
 			$scope.data = {};
 
 			var successLogin = function(userData) {
+
+				if(typeof window.analytics !== 'undefined'){
+					window.analytics.trackEvent('Click', 'login', 'Inicio de sesión Exitoso');
+				}
 				var user;
 				var ref = new Firebase(configApp.USERS);
 				var refTrophies = new Firebase(configApp.TROPHIES);
@@ -265,7 +274,12 @@ angular.module('login.controller', [])
 						},
 						function(msg) {
 							$ionicLoading.hide();
-							console.log(msg);
+							if(msg === 'service not available'){
+								$ionicLoading.show({
+									template: 'Lo sentimos tu telefono no es compatible con esta aplicacion.',
+									duration: 3000
+								});
+							};
 						}
 					);
 				} catch (e) {
@@ -289,6 +303,10 @@ angular.module('login.controller', [])
 						})
 					} else {
 						//Mensaje, este dispositivo no es compatible con esta aplicacion
+						$ionicLoading.show({
+							template: 'Lo sentimos tu telefono no es compatible con esta aplicacion.',
+							duration: 3000
+						});
 					}
 				}
 			};
@@ -333,7 +351,7 @@ angular.module('starter')
 angular.module('questions.controllers', [])
 	.controller('questionsCtrl', ['$scope', '$localStorage', '$state', '$rootScope', '$timeout', 'configApp', 'mediaService', 'sessionData', 'UtilitiesService',
 		function($scope, $localStorage, $state, $rootScope, $timeout, configApp, mediaService, sessionData, UtilitiesService) {
-
+			console.log('questiosn');
 		$scope.data = {};
 		$scope.typeQuestion = "incendios";
 		$rootScope.answered = $localStorage.questionSession;
@@ -375,6 +393,9 @@ angular.module('questions.controllers', [])
 		var saveUser = function(){
 			if(sessionData.user.preguntasAcertadasT === 120){
 				sessionData.user.win = true;
+				if(typeof window.analytics !== 'undefined'){
+					window.analytics.trackEvent('System', 'Winner', 'Usuario ha superado todos los niveles');
+				}
 			}
 			var ref = new Firebase(configApp.USERS + "/"+ sessionData.user.key);
 			ref.update(sessionData.user);
@@ -499,6 +520,29 @@ angular.module('questions.controllers', [])
 		$rootScope.loadNextQuestion = function(){
 			loadQuestion();
 		};
+
+		$rootScope.restartLevelUser = function(){
+			var questionsRef = new Firebase(configApp.QUESTIONS);
+			questionsRef.child('nivel' + sessionData.user.nivel).once('value', function(snapshot)
+			{
+				if (snapshot.exists()) {
+					var questionsJson = snapshot.val();
+					$localStorage.Questions = Object.keys(questionsJson).map(
+						function(i) {
+							return questionsJson[i];
+						});
+					questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
+					$localStorage.questionsLevel = questionsLevel;
+					$localStorage.questionSession = {
+						acerts:0,
+						fails:0
+					};
+					$rootScope.answered = $localStorage.questionSession;
+					loadQuestion();
+				}
+			});
+		};
+
 		loadQuestion();
 	}]);
 
@@ -551,11 +595,14 @@ angular.module('services.questions', [])
 .value('sessionData', {})
 .service('UtilitiesService',['$ionicHistory', '$ionicPlatform', '$localStorage', '$location', '$state', '$rootScope', '$ionicPopup','configApp', 'sessionData', function($ionicHistory, $ionicPlatform, $localStorage, $location, $state, $rootScope, $ionicPopup, configApp, sessionData) {
 	var services = {};
-	var statesLetButtonBack = ['ranking', 'trophies'];
+	var statesLetButtonBack = ['ranking', 'trophies', 'about'];
 	$rootScope.initListenerTrophies = 0;
 
 
 	$rootScope.restartUser = function() {
+		if(typeof window.analytics !== 'undefined'){
+			window.analytics.trackEvent('Click', 'restart', 'Reiniciar datos de usuario');
+		}
 		sessionData.user.preguntasAcertadas = {
 			incendios: 0,
 			evacuacion: 0,
@@ -571,10 +618,26 @@ angular.module('services.questions', [])
 		ref.update(sessionData.user);
 		$localStorage.user = sessionData.user;
 
-		if(typeof $rootScope.loadNextQuestion !== 'undefined'){
-			$rootScope.loadNextQuestion()
+		delete $localStorage.questionsLevel;
+		delete $localStorage.questionsLevel;
+
+		if(typeof $rootScope.restartLevelUser !== 'undefined'){
+			$rootScope.restartLevelUser();
+			$state.go('questions');
 		}
-		$state.go('questions');
+		else{
+			var questionsRef = new Firebase(configApp.QUESTIONS);
+			questionsRef.child('nivel' + sessionData.user.nivel).once('value', function(snapshotQ) {
+				if (snapshotQ.exists()) {
+					var questionsJson = snapshotQ.val();
+					$localStorage.Questions = Object.keys(questionsJson).map(
+						function(i) {
+							return questionsJson[i];
+						});
+					$state.go('questions');
+				}
+			});
+		}
 	};
 
 	services.createNewArray = function(array){
@@ -618,8 +681,14 @@ angular.module('services.questions', [])
 	services.loadSuccessListener = function(){
 		$rootScope.$on("$stateChangeSuccess", function(event, toState, toParams, fromState, fromParams)
 		{
+			if(typeof window.analytics !== 'undefined'){
+				window.analytics.trackView(toState.name);
+			}
 			if ($rootScope.height === undefined) {
 				$rootScope.height = jQuery('ion-nav-view').height();
+			}
+			if ($rootScope.loadComplete !== 1) {
+				$rootScope.loadComplete = 1;
 			}
 		});
 	};
@@ -633,14 +702,13 @@ angular.module('services.questions', [])
 				ionic.Platform.exitApp();
 			} else if ($state.current.name === 'menu') {
 				$rootScope.backButtonPressedOnceToExit = true;
-					//Mensaje presiona de nuevo para salir
-					setTimeout(function() {
-						$rootScope.backButtonPressedOnceToExit = false;
-					}, 2000);
-				}
-				e.preventDefault();
-				return false;
-			}, 101);
+				setTimeout(function() {
+					$rootScope.backButtonPressedOnceToExit = false;
+				}, 3000);
+			}
+			e.preventDefault();
+			return false;
+		}, 101);
 	};
 
 	services.showPopupTrophies = function(type, value, totalQuestions){
@@ -731,6 +799,40 @@ angular.module('services.questions', [])
 			showPopupCross('l_experto');
 		}
 	};
+
+	services.checkNetwork = function() {
+		var isOnline = true;
+
+		var showPopup = function(){
+			$rootScope.alertPopup = $ionicPopup.alert({
+	    		title: 'Oops',
+	    		template: 'Lo sentimos no estas conectado a internet',
+	    		cssClass:'noConnectionPopUp'
+	   		});
+		};
+
+		var hidePopUp = function(){
+			if($rootScope.alertPopup !== undefined){
+				$rootScope.alertPopup.close();
+				$rootScope.alertPopup = undefined;
+			}
+		}
+
+		var callbackFunctionOffline = function(){
+			if(!isOnline) return;
+			isOnline = false;
+			showPopup();
+		};
+
+		var callbackFunctionOnline = function(){
+			if(isOnline) return;
+			isOnline = true;
+			hidePopUp();
+		};
+
+		document.addEventListener("offline", callbackFunctionOffline, false);
+		document.addEventListener("online", callbackFunctionOnline, false);
+	}
 	return services;
 }])
 .factory("Auth", ['$firebaseAuth', 'configApp', function($firebaseAuth, configApp) {

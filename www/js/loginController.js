@@ -4,6 +4,10 @@ angular.module('login.controller', [])
 			$scope.data = {};
 
 			var successLogin = function(userData) {
+
+				if(typeof window.analytics !== 'undefined'){
+					window.analytics.trackEvent('Click', 'login', 'Inicio de sesión Exitoso');
+				}
 				var user;
 				var ref = new Firebase(configApp.USERS);
 				var refTrophies = new Firebase(configApp.TROPHIES);
@@ -73,7 +77,12 @@ angular.module('login.controller', [])
 						},
 						function(msg) {
 							$ionicLoading.hide();
-							console.log(msg);
+							if(msg === 'service not available'){
+								$ionicLoading.show({
+									template: 'Lo sentimos tu telefono no es compatible con esta aplicacion.',
+									duration: 3000
+								});
+							};
 						}
 					);
 				} catch (e) {
@@ -97,6 +106,10 @@ angular.module('login.controller', [])
 						})
 					} else {
 						//Mensaje, este dispositivo no es compatible con esta aplicacion
+						$ionicLoading.show({
+							template: 'Lo sentimos tu telefono no es compatible con esta aplicacion.',
+							duration: 3000
+						});
 					}
 				}
 			};

@@ -13,7 +13,7 @@ angular.module('starter', [
 	'services.questions'
 	])
 
-.run(['$ionicPlatform', 'UtilitiesService', function($ionicPlatform, UtilitiesService) {
+.run(['$ionicPlatform', 'UtilitiesService', function($ionicPlatform, UtilitiesService, sessionData) {
 		$ionicPlatform.ready(function() {
 			if (window.cordova && window.cordova.plugins.Keyboard) {
 				// Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -28,11 +28,16 @@ angular.module('starter', [
 			if (window.StatusBar) {
 				StatusBar.styleDefault();
 			}
+			if (typeof window.analytics !== "undefined") {
+				window.analytics.startTrackerWithId('UA-78052996-1');
+				window.analytics.trackEvent('System', 'Launch', 'Inicio de la aplicacion');
+			};
 		});
 
 		UtilitiesService.loadDataUser();
 		UtilitiesService.loadSuccessListener();
 		UtilitiesService.initBackButtonController();
+		UtilitiesService.checkNetwork();
 	}])
 	.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
 		$stateProvider

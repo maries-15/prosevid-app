@@ -10,7 +10,7 @@
             Cargando...
         </div>
         <div ng-if="usersRanking !== undefined">
-            <div ng-repeat="user in usersRanking" data-ng-if="$index < 3" class="row item-ranking">
+            <div ng-repeat="user in usersRanking" class="row item-ranking">
                 <div class = "col col-20">
                     <span class="position-rank">{{$index+1}}</span>
                     <img class="image-avatar" src="{{user.image}}">  
@@ -27,10 +27,10 @@
                     </span>
                 </div>
             </div>
-            <div id="user" data-ng-if="currentUser.position+1 > 3 " class="divisor">
+            <div id="user" data-ng-if="currentUser.position > 4 " class="divisor">
             </div >
 
-            <div id="user" data-ng-if="currentUser.position+1 > 3" class="row item-user-ranking item-ranking ">
+            <div id="user" data-ng-if="currentUser.position > 4" class="row item-user-ranking item-ranking ">
                 <div class = "col col-20">
                     <span class="position-rank">{{currentUser.position+1}}</span>
                     <img class="image-avatar" src="{{user.image}}">  

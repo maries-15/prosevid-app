@@ -1,7 +1,7 @@
 angular.module('questions.controllers', [])
 	.controller('questionsCtrl', ['$scope', '$localStorage', '$state', '$rootScope', '$timeout', 'configApp', 'mediaService', 'sessionData', 'UtilitiesService',
 		function($scope, $localStorage, $state, $rootScope, $timeout, configApp, mediaService, sessionData, UtilitiesService) {
-
+			console.log('questiosn');
 		$scope.data = {};
 		$scope.typeQuestion = "incendios";
 		$rootScope.answered = $localStorage.questionSession;
@@ -43,6 +43,9 @@ angular.module('questions.controllers', [])
 		var saveUser = function(){
 			if(sessionData.user.preguntasAcertadasT === 120){
 				sessionData.user.win = true;
+				if(typeof window.analytics !== 'undefined'){
+					window.analytics.trackEvent('System', 'Winner', 'Usuario ha superado todos los niveles');
+				}
 			}
 			var ref = new Firebase(configApp.USERS + "/"+ sessionData.user.key);
 			ref.update(sessionData.user);
@@ -167,5 +170,28 @@ angular.module('questions.controllers', [])
 		$rootScope.loadNextQuestion = function(){
 			loadQuestion();
 		};
+
+		$rootScope.restartLevelUser = function(){
+			var questionsRef = new Firebase(configApp.QUESTIONS);
+			questionsRef.child('nivel' + sessionData.user.nivel).once('value', function(snapshot)
+			{
+				if (snapshot.exists()) {
+					var questionsJson = snapshot.val();
+					$localStorage.Questions = Object.keys(questionsJson).map(
+						function(i) {
+							return questionsJson[i];
+						});
+					questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
+					$localStorage.questionsLevel = questionsLevel;
+					$localStorage.questionSession = {
+						acerts:0,
+						fails:0
+					};
+					$rootScope.answered = $localStorage.questionSession;
+					loadQuestion();
+				}
+			});
+		};
+
 		loadQuestion();
 	}]);
