@@ -415,7 +415,7 @@
     display: none; }
 
 .noConnectionPopUp {
-  background: rgba(0, 0, 0, 0.5); }
+  background: rgba(0, 0, 0, 0.75); }
   .noConnectionPopUp .popup {
     border-radius: 8px; }
   .noConnectionPopUp .popup-head {

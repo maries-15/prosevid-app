@@ -39,17 +39,24 @@ angular.module('login.controller', [])
 					$rootScope.user = sessionData.user;
 					$localStorage.user = user;
 					var questionsRef = new Firebase(configApp.QUESTIONS);
-					questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {
-						if (snapshotQ.exists()) {
-							var questionsJson = snapshotQ.val();
-							$localStorage.Questions = Object.keys(questionsJson).map(
-								function(i) {
-									return questionsJson[i];
-								});
-							$ionicLoading.hide();
-							$state.go('menu');
-						}
-					});
+					if(user.nivel <= 20){
+						questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {
+							if (snapshotQ.exists()) {
+								var questionsJson = snapshotQ.val();
+								$localStorage.Questions = Object.keys(questionsJson).map(
+									function(i) {
+										return questionsJson[i];
+									});
+								$ionicLoading.hide();
+								$state.go('menu');
+							}
+						});
+					}
+					else {
+						$ionicLoading.hide();
+						$state.go('menu');
+					}
+					
 				});
 			};
 
@@ -76,13 +83,10 @@ angular.module('login.controller', [])
 							successLogin(userData);
 						},
 						function(msg) {
-							$ionicLoading.hide();
-							if(msg === 'service not available'){
-								$ionicLoading.show({
-									template: 'Lo sentimos tu telefono no es compatible con esta aplicacion.',
-									duration: 3000
-								});
-							};
+							$ionicLoading.show({
+								template: 'Lo sentimos tu telefono no es compatible con esta aplicacion.',
+								duration: 3000
+							});
 						}
 					);
 				} catch (e) {

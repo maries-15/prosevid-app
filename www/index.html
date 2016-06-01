@@ -25,10 +25,19 @@
 
   </head>
   <body ng-app="starter">
-    <div style="color:'#fff'" data-ng-if="$root.loadComplete !== 1">
-        Cargando...
+    <div ng-if="$root.isOnline === false">
+        <div class="popup-container noConnectionPopUp popup-showing" >
+            <div class="popup">
+                <div class="popup-head">
+                    <h3 class="popup-title ng-binding">Oops</h3>
+                </div>
+                <div class="popup-body">
+                    <span>Lo sentimos no estas conectado a internet</span>
+                </div>
+            </div>
+        </div>
     </div>
-    <div data-ng-if="$root.loadComplete === 1">
+    <div>
         <ion-nav-view></ion-nav-view> 
     </div>
     <script src="js/dist/provised.js"></script>

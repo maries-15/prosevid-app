@@ -146,11 +146,15 @@ angular.module('questions.controllers', [])
 			if (answer === $scope.data.opcionCorrecta) {
 				acertQuestion();
 				if($rootScope.answered.acerts === 6){
+					$rootScope.passLevelTemp = true;
 					setTimeout(function() {
 						loadNextLevel();
-						$state.go('passLevel', {
-							'navDirection':'forward'
-						});
+						if($rootScope.go !== true){
+							delete $rootScope.passLevelTemp;
+							$state.go('passLevel', {
+								'navDirection':'forward'
+							});
+						}
 					}, 3600);
 					return;
 				}

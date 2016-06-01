@@ -34,9 +34,9 @@ angular.module('starter', [
 			};
 		});
 
+		UtilitiesService.initBackButtonController();
 		UtilitiesService.loadDataUser();
 		UtilitiesService.loadSuccessListener();
-		UtilitiesService.initBackButtonController();
 		UtilitiesService.checkNetwork();
 	}])
 	.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {

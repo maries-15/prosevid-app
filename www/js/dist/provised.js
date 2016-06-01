@@ -34,9 +34,9 @@ angular.module('starter', [
 			};
 		});
 
+		UtilitiesService.initBackButtonController();
 		UtilitiesService.loadDataUser();
 		UtilitiesService.loadSuccessListener();
-		UtilitiesService.initBackButtonController();
 		UtilitiesService.checkNetwork();
 	}])
 	.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
@@ -236,17 +236,24 @@ angular.module('login.controller', [])
 					$rootScope.user = sessionData.user;
 					$localStorage.user = user;
 					var questionsRef = new Firebase(configApp.QUESTIONS);
-					questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {
-						if (snapshotQ.exists()) {
-							var questionsJson = snapshotQ.val();
-							$localStorage.Questions = Object.keys(questionsJson).map(
-								function(i) {
-									return questionsJson[i];
-								});
-							$ionicLoading.hide();
-							$state.go('menu');
-						}
-					});
+					if(user.nivel <= 20){
+						questionsRef.child('nivel' + user.nivel).once('value', function(snapshotQ) {
+							if (snapshotQ.exists()) {
+								var questionsJson = snapshotQ.val();
+								$localStorage.Questions = Object.keys(questionsJson).map(
+									function(i) {
+										return questionsJson[i];
+									});
+								$ionicLoading.hide();
+								$state.go('menu');
+							}
+						});
+					}
+					else {
+						$ionicLoading.hide();
+						$state.go('menu');
+					}
+					
 				});
 			};
 
@@ -273,13 +280,10 @@ angular.module('login.controller', [])
 							successLogin(userData);
 						},
 						function(msg) {
-							$ionicLoading.hide();
-							if(msg === 'service not available'){
-								$ionicLoading.show({
-									template: 'Lo sentimos tu telefono no es compatible con esta aplicacion.',
-									duration: 3000
-								});
-							};
+							$ionicLoading.show({
+								template: 'Lo sentimos tu telefono no es compatible con esta aplicacion.',
+								duration: 3000
+							});
 						}
 					);
 				} catch (e) {
@@ -496,11 +500,15 @@ angular.module('questions.controllers', [])
 			if (answer === $scope.data.opcionCorrecta) {
 				acertQuestion();
 				if($rootScope.answered.acerts === 6){
+					$rootScope.passLevelTemp = true;
 					setTimeout(function() {
 						loadNextLevel();
-						$state.go('passLevel', {
-							'navDirection':'forward'
-						});
+						if($rootScope.go !== true){
+							delete $rootScope.passLevelTemp;
+							$state.go('passLevel', {
+								'navDirection':'forward'
+							});
+						}
 					}, 3600);
 					return;
 				}
@@ -593,7 +601,7 @@ angular.module('starter.controllers')
 angular.module('services.questions', [])
 .constant('configApp', applicationConfig)
 .value('sessionData', {})
-.service('UtilitiesService',['$ionicHistory', '$ionicPlatform', '$localStorage', '$location', '$state', '$rootScope', '$ionicPopup','configApp', 'sessionData', function($ionicHistory, $ionicPlatform, $localStorage, $location, $state, $rootScope, $ionicPopup, configApp, sessionData) {
+.service('UtilitiesService',['$ionicHistory', '$ionicPlatform', '$localStorage', '$location', '$state', '$rootScope', '$ionicPopup', '$timeout','configApp', 'sessionData', function($ionicHistory, $ionicPlatform, $localStorage, $location, $state, $rootScope, $ionicPopup, $timeout, configApp, sessionData) {
 	var services = {};
 	var statesLetButtonBack = ['ranking', 'trophies', 'about'];
 	$rootScope.initListenerTrophies = 0;
@@ -687,9 +695,6 @@ angular.module('services.questions', [])
 			if ($rootScope.height === undefined) {
 				$rootScope.height = jQuery('ion-nav-view').height();
 			}
-			if ($rootScope.loadComplete !== 1) {
-				$rootScope.loadComplete = 1;
-			}
 		});
 	};
 
@@ -728,9 +733,17 @@ angular.module('services.questions', [])
 				timerOut = setTimeout(function()  {
 				    popupTrophies.close();
 				    $rootScope.go = false;
-				    $state.go('completeQuestion',{
-				    	'navDirection':'forward'
-				    });
+				    if($rootScope.passLevelTemp === true){
+				    	delete $rootScope.passLevelTemp;
+				    	$state.go('passLevel',{
+					    	'navDirection':'forward'
+					    });
+				    }
+				    else{
+				    	$state.go('completeQuestion',{
+					    	'navDirection':'forward'
+					    });
+				    }
 				 }, 5000);
 			}
 			else{
@@ -801,33 +814,20 @@ angular.module('services.questions', [])
 	};
 
 	services.checkNetwork = function() {
-		var isOnline = true;
-
-		var showPopup = function(){
-			$rootScope.alertPopup = $ionicPopup.alert({
-	    		title: 'Oops',
-	    		template: 'Lo sentimos no estas conectado a internet',
-	    		cssClass:'noConnectionPopUp'
-	   		});
-		};
-
-		var hidePopUp = function(){
-			if($rootScope.alertPopup !== undefined){
-				$rootScope.alertPopup.close();
-				$rootScope.alertPopup = undefined;
-			}
-		}
+		$rootScope.isOnline = true;
 
 		var callbackFunctionOffline = function(){
-			if(!isOnline) return;
-			isOnline = false;
-			showPopup();
+			if(!$rootScope.isOnline) return;
+			$timeout(function(){
+				$rootScope.isOnline = false;
+			});
 		};
 
 		var callbackFunctionOnline = function(){
-			if(isOnline) return;
-			isOnline = true;
-			hidePopUp();
+			if($rootScope.isOnline) return;
+			$timeout(function(){
+				$rootScope.isOnline = true;
+			});
 		};
 
 		document.addEventListener("offline", callbackFunctionOffline, false);
