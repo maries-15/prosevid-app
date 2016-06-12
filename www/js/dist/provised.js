@@ -37,7 +37,8 @@ angular.module('starter', [
 		UtilitiesService.initBackButtonController();
 		UtilitiesService.loadDataUser();
 		UtilitiesService.loadSuccessListener();
-		UtilitiesService.checkNetwork();
+		//UtilitiesService.checkNetwork();
+		UtilitiesService.checkFirebaseConection();
 	}])
 	.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
 		$stateProvider
@@ -224,6 +225,10 @@ angular.module('login.controller', [])
 								evacuacion: 0,
 								primerosAuxilios: 0
 							},
+							questionSession: {
+								acerts:0,
+								fails:0
+							},
 							preguntasErroneas: 0,
 							preguntasAcertadasT: 0,
 							win: false
@@ -358,7 +363,7 @@ angular.module('questions.controllers', [])
 			console.log('questiosn');
 		$scope.data = {};
 		$scope.typeQuestion = "incendios";
-		$rootScope.answered = $localStorage.questionSession;
+		$rootScope.answered = sessionData.user.questionSession;
 		var questionsLevel;
 		var timerOut;
 		var secondsTimer;
@@ -409,11 +414,15 @@ angular.module('questions.controllers', [])
 		var loadNextLevel = function(){
 			//Update user level in database
 			sessionData.user.nivel = sessionData.user.nivel + 1;
+			sessionData.user.questionSession = {acerts:0,fails:0};
+			$rootScope.answered = sessionData.user.questionSession;
 			saveUser();
 			//Get questions of the next level
 			var questionsRef = new Firebase(configApp.QUESTIONS);
+			console.log(sessionData.user.nivel);
 			questionsRef.child('nivel' + sessionData.user.nivel).once('value', function(snapshot)
 			{
+				console.log(snapshot.exists());
 				if (snapshot.exists()) {
 					var questionsJson = snapshot.val();
 					$localStorage.Questions = Object.keys(questionsJson).map(
@@ -421,12 +430,8 @@ angular.module('questions.controllers', [])
 							return questionsJson[i];
 						});
 					questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
+					console.log(questionsLevel);
 					$localStorage.questionsLevel = questionsLevel;
-					$localStorage.questionSession = {
-						acerts:0,
-						fails:0
-					};
-					$rootScope.answered = $localStorage.questionSession;
 				}
 			});
 		};
@@ -454,11 +459,11 @@ angular.module('questions.controllers', [])
 				setHeightBlockScreen($rootScope.height);
 				mediaService.playShot(2);
 				UtilitiesService.loadPopupTime();
+				$rootScope.answered.fails = $rootScope.answered.fails + 1;
 				sessionData.user.preguntasErroneas = sessionData.user.preguntasErroneas + 1;
 				saveUser();
 				setTimeout(function() {
 					setHeightBlockScreen(0);
-					$rootScope.answered.fails = $rootScope.answered.fails + 1;
 					jQuery('.barAnswer').css('width', (($rootScope.answered.acerts/6)*100) +'%');
 					
 				}, 1500);
@@ -475,9 +480,9 @@ angular.module('questions.controllers', [])
 			var acertQuestion = function(){
 				sessionData.user.preguntasAcertadas[$scope.typeQuestion] = sessionData.user.preguntasAcertadas[$scope.typeQuestion] + 1;
 				sessionData.user.preguntasAcertadasT = sessionData.user.preguntasAcertadasT + 1;
+				$rootScope.answered.acerts = $rootScope.answered.acerts + 1;
 				saveUser();
 
-				$rootScope.answered.acerts = $rootScope.answered.acerts + 1;
 				efectAnsweredQuestion(true, id);
 				setTimeout(function() {
 					mediaService.playShot(1);
@@ -488,8 +493,8 @@ angular.module('questions.controllers', [])
 
 			var failQuestion = function(){
 				sessionData.user.preguntasErroneas = sessionData.user.preguntasErroneas + 1;
-				saveUser();
 				$rootScope.answered.fails = $rootScope.answered.fails + 1;
+				saveUser();
 				efectAnsweredQuestion(false, id);
 				setTimeout(function() {
 					mediaService.playShot(2);
@@ -541,11 +546,6 @@ angular.module('questions.controllers', [])
 						});
 					questionsLevel = UtilitiesService.createNewArray($localStorage.Questions);
 					$localStorage.questionsLevel = questionsLevel;
-					$localStorage.questionSession = {
-						acerts:0,
-						fails:0
-					};
-					$rootScope.answered = $localStorage.questionSession;
 					loadQuestion();
 				}
 			});
@@ -621,6 +621,7 @@ angular.module('services.questions', [])
 		sessionData.user.preguntasErroneas = 0;
 		sessionData.user.win = false;
 		sessionData.user.nivel = 1;
+		sessionData.user.questionSession = {acerts:0,fails:0};
 
 		var ref = new Firebase(configApp.USERS + "/"+ sessionData.user.key);
 		ref.update(sessionData.user);
@@ -661,12 +662,6 @@ angular.module('services.questions', [])
 			sessionData.user = $localStorage.user;
 			$rootScope.user = sessionData.user;
 			$location.path('/menu');
-		}
-		if($localStorage.questionSession === undefined){
-			$localStorage.questionSession = {
-				acerts:0,
-				fails:0
-			};
 		}
 	};
 
@@ -833,6 +828,23 @@ angular.module('services.questions', [])
 		document.addEventListener("offline", callbackFunctionOffline, false);
 		document.addEventListener("online", callbackFunctionOnline, false);
 	}
+
+	services.checkFirebaseConection = function(){
+		var firebaseRef = new Firebase(applicationConfig.REF);
+		setTimeout(function() {
+			firebaseRef.child('.info/connected').on('value', function(connectedSnap) {
+			  	if (connectedSnap.val() === true) {
+			    	$timeout(function(){
+						$rootScope.isOnline = true;
+					});
+			  	} else {
+			    	$timeout(function(){
+						$rootScope.isOnline = false;
+					});
+			  	}
+			});
+		}, 1500);
+	};
 	return services;
 }])
 .factory("Auth", ['$firebaseAuth', 'configApp', function($firebaseAuth, configApp) {

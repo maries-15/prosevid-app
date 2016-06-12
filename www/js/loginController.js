@@ -27,6 +27,10 @@ angular.module('login.controller', [])
 								evacuacion: 0,
 								primerosAuxilios: 0
 							},
+							questionSession: {
+								acerts:0,
+								fails:0
+							},
 							preguntasErroneas: 0,
 							preguntasAcertadasT: 0,
 							win: false

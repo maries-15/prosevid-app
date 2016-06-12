@@ -21,6 +21,7 @@ angular.module('services.questions', [])
 		sessionData.user.preguntasErroneas = 0;
 		sessionData.user.win = false;
 		sessionData.user.nivel = 1;
+		sessionData.user.questionSession = {acerts:0,fails:0};
 
 		var ref = new Firebase(configApp.USERS + "/"+ sessionData.user.key);
 		ref.update(sessionData.user);
@@ -61,12 +62,6 @@ angular.module('services.questions', [])
 			sessionData.user = $localStorage.user;
 			$rootScope.user = sessionData.user;
 			$location.path('/menu');
-		}
-		if($localStorage.questionSession === undefined){
-			$localStorage.questionSession = {
-				acerts:0,
-				fails:0
-			};
 		}
 	};
 
@@ -233,6 +228,23 @@ angular.module('services.questions', [])
 		document.addEventListener("offline", callbackFunctionOffline, false);
 		document.addEventListener("online", callbackFunctionOnline, false);
 	}
+
+	services.checkFirebaseConection = function(){
+		var firebaseRef = new Firebase(applicationConfig.REF);
+		setTimeout(function() {
+			firebaseRef.child('.info/connected').on('value', function(connectedSnap) {
+			  	if (connectedSnap.val() === true) {
+			    	$timeout(function(){
+						$rootScope.isOnline = true;
+					});
+			  	} else {
+			    	$timeout(function(){
+						$rootScope.isOnline = false;
+					});
+			  	}
+			});
+		}, 1500);
+	};
 	return services;
 }])
 .factory("Auth", ['$firebaseAuth', 'configApp', function($firebaseAuth, configApp) {

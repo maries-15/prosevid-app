@@ -37,7 +37,8 @@ angular.module('starter', [
 		UtilitiesService.initBackButtonController();
 		UtilitiesService.loadDataUser();
 		UtilitiesService.loadSuccessListener();
-		UtilitiesService.checkNetwork();
+		//UtilitiesService.checkNetwork();
+		UtilitiesService.checkFirebaseConection();
 	}])
 	.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
 		$stateProvider
